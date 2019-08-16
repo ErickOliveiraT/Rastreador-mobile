@@ -2,7 +2,6 @@ package com.example.rastreador;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +14,11 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 
 public class RastreioActivity extends AppCompatActivity {
 
@@ -42,7 +46,9 @@ public class RastreioActivity extends AppCompatActivity {
             @Override
             public void onLocationChanged(Location location) {
                 cont[0]++;
-                text.setText("Lat: " + location.getLatitude() + "\nLong: " + location.getLongitude() + " (" + cont[0] + ")\n");
+                Date currentTime = Calendar.getInstance().getTime();
+                String hora = currentTime.toString();
+                text.setText("Lat: " + location.getLatitude() + "\nLong: " + location.getLongitude() + "\nHora: " + hora + "\nCaptura: #" + cont[0]);
             }
 
             @Override
@@ -91,10 +97,21 @@ public class RastreioActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
+                button.setEnabled(false);
                 text.setText("Obtendo sinal GPS...");
                 locationManager.requestLocationUpdates("gps", 20000, 0, locationListener);
                 //provider - minTime(ms) - minDistance - listener
             }
         });
+    }
+
+    private void salvarCoordenadas(String login, double latitude, double longitude, String hora) {
+
+
+        //Implementar envio das coordenadas
+
+
+
+
     }
 }
