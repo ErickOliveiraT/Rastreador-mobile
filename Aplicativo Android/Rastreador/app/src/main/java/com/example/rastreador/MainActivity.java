@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         btn_login.setVisibility(View.VISIBLE);
-                        Toast.makeText(MainActivity.this, "Erro2: " + error.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Erro 2: " + error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 })
         {
