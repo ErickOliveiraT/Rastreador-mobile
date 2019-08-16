@@ -14,11 +14,20 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import android.widget.Toast;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RastreioActivity extends AppCompatActivity {
 
@@ -26,6 +35,7 @@ public class RastreioActivity extends AppCompatActivity {
     private TextView text;
     private LocationManager locationManager;
     private LocationListener locationListener;
+    private static String URL_REGIST = "http://192.168.0.103/coordenadas.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +47,7 @@ public class RastreioActivity extends AppCompatActivity {
         final int[] cont = {0};
 
         Intent it = getIntent();
-        String login = it.getStringExtra("login").toString();
+        final String login = it.getStringExtra("login").toString();
         text.setText("Olá "+login+", Pressione o botão abaixo para iniciar o rastreamento");
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -47,8 +57,11 @@ public class RastreioActivity extends AppCompatActivity {
             public void onLocationChanged(Location location) {
                 cont[0]++;
                 Date currentTime = Calendar.getInstance().getTime();
-                String hora = currentTime.toString();
-                text.setText("Lat: " + location.getLatitude() + "\nLong: " + location.getLongitude() + "\nHora: " + hora + "\nCaptura: #" + cont[0]);
+                final String hora = currentTime.toString();
+                final String lat = String.valueOf(location.getLatitude());
+                final String lon = String.valueOf(location.getLongitude());
+                text.setText("Lat: " + lat + "\nLong: " + lon + "\nHora: " + hora + "\nCaptura: #" + cont[0]);
+                salvarCoordenadas(login,lat,lon,hora);
             }
 
             @Override
@@ -105,13 +118,49 @@ public class RastreioActivity extends AppCompatActivity {
         });
     }
 
-    private void salvarCoordenadas(String login, double latitude, double longitude, String hora) {
+    private void salvarCoordenadas(String pLogin, String pLatitude, String pLongitude, String pHora) {
 
+        final String login = pLogin.trim();
+        final String latitude = pLatitude.trim();
+        final String longitude = pLongitude.trim();
+        final String hora = pHora.trim();
 
-        //Implementar envio das coordenadas
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_REGIST,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String success = jsonObject.getString("success");
 
+                            if (success.equals("1")) {
+                                Toast.makeText(getApplicationContext(),"Coordenadas atuais enviadas ao banco de dados!", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(),"Erro 1: " + e.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(),"Erro 2: " + error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                })
+        {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("login", login);
+                params.put("latitude", latitude);
+                params.put("longitude",longitude);
+                params.put("hora", hora);
+                return params;
+            }
+        };
 
-
-
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
     }
 }

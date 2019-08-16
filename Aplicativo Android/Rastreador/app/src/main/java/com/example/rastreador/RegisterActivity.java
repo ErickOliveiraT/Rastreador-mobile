@@ -1,6 +1,8 @@
 package com.example.rastreador;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -43,6 +45,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                 if (!mNome.isEmpty() || !mLogin.isEmpty() || !mSenha.isEmpty()) {
                     Regist();
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
                 } else {
                     name.setError("Insira seu nome");
                     login.setError("Insira um login");
