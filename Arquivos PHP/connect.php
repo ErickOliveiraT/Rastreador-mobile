@@ -1,5 +1,5 @@
 <?php
 
-$conn = mysqli_connect("localhost", "user-rastreador", "bd-rastreador-admin", "rastreador");
+$conn = mysqli_connect("localhost", "id11033304_user", "bd-rastreador-admin", "id11033304_rastreador");
 
 ?>

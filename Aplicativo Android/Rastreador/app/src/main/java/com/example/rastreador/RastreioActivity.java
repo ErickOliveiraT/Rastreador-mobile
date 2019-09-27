@@ -35,7 +35,9 @@ public class RastreioActivity extends AppCompatActivity {
     private TextView text;
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private static String URL_REGIST = "http://192.168.0.103/coordenadas.php";
+    //private static String URL_REGIST = "http://192.168.0.103/coordenadas.php";
+    //private static String URL_REGIST = "http://projeto-rastreador.000webhostapp.com/coordenadas.php";
+    private static String URL_REGIST = "http://rastreador-com241.000webhostapp.com/coordenadas.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

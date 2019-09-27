@@ -25,7 +25,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText login, password;
     private Button btn_login;
     private TextView link_regist;
-    private static String URL_LOGIN = "http://192.168.0.103/login.php";
+    //private static String URL_LOGIN = "http://192.168.0.103/login.php";
+    //private static String URL_LOGIN = "http://projeto-rastreador.000webhostapp.com/login.php";
+    private static String URL_LOGIN = "http://rastreador-com241.000webhostapp.com/login.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
