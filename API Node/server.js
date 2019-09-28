@@ -25,7 +25,6 @@ function execSQLQuery(sqlQry, res) {
         else
           res.json(results);
         connection.end();
-        console.log('Executou!');
     });
 }
 
@@ -34,6 +33,10 @@ router.get('/', (req, res) => res.json({ message: 'Funcionando!' })); //Indica d
 
 router.get('/users', (req, res) => { //Consulta todos os usuários
     execSQLQuery('SELECT * FROM users', res);
+})
+
+router.get('/coordenadas', (req, res) => { //Consulta todas coordenadas
+    execSQLQuery('SELECT * FROM coordenadas', res);
 })
 
 router.get('/users/:login?', (req, res) => { //Consulta Usuário por login
@@ -65,9 +68,42 @@ router.post('/autenticate', (req,res) => { //Autentica um usuário
     const login = req.body.login
     const password = req.body.password
     let password_hash = md5(password)
-    execSQLQuery(`SELECT password FROM users WHERE login = '${login}'`, res);
-    //Preciso pegar a resposta da consulta agora
+    const sqlQry = `SELECT password FROM users WHERE login = '${login}'`
+
+    const connection = mysql.createConnection({
+        host: 'localhost',
+        port: 3306,
+        user: 'root',
+        password: '',
+        database: 'rastreador'
+    });
+   
+    connection.query(sqlQry, function(error, results, fields){
+        if(error) //Erro na consulta
+            res.json({"valid":false,"error":error})
+        else {
+          if (results[0] == undefined || results[0] === undefined) { //Usuário não existe
+            res.json({"valid":false})
+          }
+          else { //Usuário existe
+            if (results[0].password === password_hash) { //Senha certa
+              res.json({"valid":true})
+            } else { //Senha errada
+                res.json({"valid":false})
+            }
+          } 
+        }
+        connection.end();
+    });
 });
 
+router.get('/coordenadas/:dia?/:mes?/:ano?/:login?', (req, res) => { //Consulta as coordenadas do dia
+    if(req.params.ano && req.params.ano && req.params.dia && req.params.login) {
+        let filter = req.params.ano + '-' + req.params.mes + '-' + req.params.dia + `%' and login = '${req.params.login}';`
+        execSQLQuery(`SELECT * FROM coordenadas WHERE hour LIKE '${filter}`, res);
+    } else {
+        res.json({"erro":"Requisição Inválida"})
+    }
+})
+
 app.listen(port)
-console.log('API ligada')
