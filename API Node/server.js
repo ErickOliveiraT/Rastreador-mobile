@@ -28,6 +28,18 @@ function execSQLQuery(sqlQry, res) {
     });
 }
 
+//Token de autenticação
+function getToken() {
+    const pos = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyxz0123456789'
+    var shuffled = pos.split('').sort(() => {return 0.5-Math.random()}).join('')
+    let token = ''
+    for (let i = 0; i < 32; i++) {
+        let rd = Math.floor((Math.random() * pos.length));
+        token += shuffled[rd]
+    }
+    return token
+}
+
 //Definindo as rotas
 router.get('/', (req, res) => res.json({ message: 'Funcionando!' })); //Indica de a API está online
 
