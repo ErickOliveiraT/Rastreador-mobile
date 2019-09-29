@@ -83,13 +83,13 @@ router.post('/autenticate', (req,res) => { //Autentica um usuário
             res.json({"valid":false,"error":error})
         else {
           if (results[0] == undefined || results[0] === undefined) { //Usuário não existe
-            res.json({"valid":false})
+            res.json({"valid":false,"error":"Usuário não existe"})
           }
           else { //Usuário existe
             if (results[0].password === password_hash) { //Senha certa
               res.json({"valid":true})
             } else { //Senha errada
-                res.json({"valid":false})
+                res.json({"valid":false,"error":"Senha incorreta"})
             }
           } 
         }
