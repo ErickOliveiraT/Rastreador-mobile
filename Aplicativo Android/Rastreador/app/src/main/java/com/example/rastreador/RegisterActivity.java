@@ -24,7 +24,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     private EditText name, login, password;
     private Button btn_regist;
-    private static String URL_REGIST = "http://192.168.0.103/register.php";
+    //private static String URL_REGIST = "http://192.168.0.103/register.php";
+    //private static String URL_REGIST = "http://projeto-rastreador.000webhostapp.com/register.php";
+    private static String URL_REGIST = "http://rastreador-com241.000webhostapp.com/register.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
