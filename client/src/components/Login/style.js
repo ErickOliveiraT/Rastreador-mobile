@@ -13,7 +13,6 @@ export const useStyles = makeStyles(theme => ({
     paddingTop: 80
   },
   button: {
-    margin: theme.spacing(1),
     marginTop: 18,
     width: 400
   },
@@ -24,5 +23,10 @@ export const useStyles = makeStyles(theme => ({
   },
   input: {
     display: "none"
+  },
+  formTitle: {
+    margin: 0,
+    paddingLeft: 10,
+    fontFamily: "Ubuntu"
   }
 }));
