@@ -55,7 +55,6 @@ router.get('/users/:login?', (req, res) => { //Consulta Usuário por login
     let filter = ''
     if(req.params.login) filter = `WHERE login = '${req.params.login}'`
     execSQLQuery('SELECT * FROM users ' + filter, res);
-    console.log(res.results)
 })
 
 router.post('/adduser', (req, res) => { //Adiciona um novo usuário
