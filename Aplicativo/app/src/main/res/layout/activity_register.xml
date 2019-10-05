@@ -4,19 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#E6E6E6"
     android:orientation="vertical"
     android:paddingLeft="30dp"
     android:paddingTop="80dp"
     android:paddingRight="30dp"
     tools:context=".RegisterActivity">
 
-    <ProgressBar
-        android:id="@+id/loading"
+    <ImageView
+        android:id="@+id/logo"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:visibility="gone" />
+        android:layout_height="104dp"
+        app:srcCompat="@drawable/add" />
 
     <EditText
         android:id="@+id/etNome"
@@ -48,7 +47,7 @@
         android:layout_height="55dp"
         android:layout_marginTop="30dp"
         android:backgroundTint="@color/colorPrimary"
-        android:text="Registrar"
+        android:text="Cadastrar"
         android:textColor="@android:color/white" />
 
 </LinearLayout>

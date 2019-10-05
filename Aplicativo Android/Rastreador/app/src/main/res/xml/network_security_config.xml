@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<network-security-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">35.198.44.99/</domain> <!-- the domain you are using for api network call 192.168.0.103 -->
-    </domain-config>
-</network-security-config>

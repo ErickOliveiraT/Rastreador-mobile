@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -15,41 +16,33 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class RastreioActivity extends AppCompatActivity {
 
     private Button button;
+    private Button button2;
     private TextView text;
     private LocationManager locationManager;
     private LocationListener locationListener;
-    //private static String URL_REGIST = "http://192.168.0.103/coordenadas.php";
-    //private static String URL_REGIST = "http://projeto-rastreador.000webhostapp.com/coordenadas.php";
-    private static String URL_REGIST = "http://rastreador-com241.000webhostapp.com/coordenadas.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rastreio);
 
-        button = (Button) findViewById(R.id.button);
+        button = (Button) findViewById(R.id.buttonLigar);
         text = (TextView) findViewById(R.id.text);
         final int[] cont = {0};
 
+        configureButton();
         Intent it = getIntent();
-        final String login = it.getStringExtra("login").toString();
+        final String login = it.getStringExtra("login");
+        String login2 = login;
         text.setText("Olá "+login+", Pressione o botão abaixo para iniciar o rastreamento");
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -63,7 +56,7 @@ public class RastreioActivity extends AppCompatActivity {
                 final String lat = String.valueOf(location.getLatitude());
                 final String lon = String.valueOf(location.getLongitude());
                 text.setText("Lat: " + lat + "\nLong: " + lon + "\nHora: " + hora + "\nCaptura: #" + cont[0]);
-                salvarCoordenadas(login,lat,lon,hora);
+                salvarCoordenadas(login,lat,lon);
             }
 
             @Override
@@ -112,57 +105,50 @@ public class RastreioActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                button.setEnabled(false);
                 text.setText("Obtendo sinal GPS...");
+                configureButton2();
                 locationManager.requestLocationUpdates("gps", 20000, 0, locationListener);
                 //provider - minTime(ms) - minDistance - listener
             }
         });
     }
 
-    private void salvarCoordenadas(String pLogin, String pLatitude, String pLongitude, String pHora) {
+    private void configureButton2() {
+        button.setText("Desligar Rastreador");
+        button.setBackgroundColor(Color.RED);
 
-        final String login = pLogin.trim();
-        final String latitude = pLatitude.trim();
-        final String longitude = pLongitude.trim();
-        final String hora = pHora.trim();
+        button.setOnClickListener(new View.OnClickListener() {
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_REGIST,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String success = jsonObject.getString("success");
-
-                            if (success.equals("1")) {
-                                Toast.makeText(getApplicationContext(),"Coordenadas atuais enviadas ao banco de dados!", Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(getApplicationContext(),"Erro 1: " + e.toString(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(),"Erro 2: " + error.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                })
-        {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("login", login);
-                params.put("latitude", latitude);
-                params.put("longitude",longitude);
-                params.put("hora", hora);
-                return params;
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), RastreioActivity.class);
+                Intent it = getIntent();
+                final String login = it.getStringExtra("login");
+                intent.putExtra("login", login);
+                startActivity(intent);
+                finish();
             }
-        };
+        });
+    }
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+    public void salvarCoordenadas(String login, String latitude, String longitude) {
+
+        JsonObject json = new JsonObject();
+        json.addProperty("login", login);
+        json.addProperty("latitude", latitude);
+        json.addProperty("longitude", longitude);
+
+        Ion.with(this).load("http://192.168.0.103:3000/addcoordenada")
+                .setJsonObjectBody(json)
+                .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
+            @Override
+            public void onCompleted(Exception e, JsonObject result) {
+                if(e != null) { //Erro na requisição
+                    Toast.makeText(getApplicationContext(), "Erro: " + e.toString(), Toast.LENGTH_LONG).show();
+                } else { //Coordenadas salvas
+                    Toast.makeText(getApplicationContext(), "Coordenadas enviadas ao servidor", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

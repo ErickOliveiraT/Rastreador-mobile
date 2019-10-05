@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#E6E6E6"
     tools:context=".MainActivity">
 
     <TextView
@@ -22,14 +23,12 @@
         app:layout_constraintVertical_bias="0.061" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/buttonLigar"
         android:layout_width="217dp"
         android:layout_height="89dp"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="36dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:backgroundTint="@color/colorPrimary"
         android:text="Ligar Rastreador"
         android:textColor="@android:color/white"
@@ -37,4 +36,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
