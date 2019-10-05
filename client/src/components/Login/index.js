@@ -1,13 +1,24 @@
 import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Logo from "../../img/logo.png";
-import { useStyles } from "./style";
+import Snackbar from "@material-ui/core/Snackbar";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
+import { useStyles } from "./style";
 
-export default function Login() {
+export default function Login(props) {
   const classes = useStyles();
   const [loginForm, setLoginForm] = React.useState(true);
+  const [alertMessage, setAlertMessage] = React.useState("");
+  const [showAlert, setShowAlert] = React.useState(false);
+
+  const handleAlertOpen = () => {
+    setShowAlert(true);
+  };
+
+  const handleAlertClose = () => {
+    setShowAlert(false);
+  };
 
   function changeForm() {
     setLoginForm(!loginForm);
@@ -33,11 +44,26 @@ export default function Login() {
         </Grid>
         {/* Login/Register Form */}
         {loginForm ? (
-          <LoginForm changeForm={changeForm} />
+          <LoginForm changeForm={changeForm} history={props.history} />
         ) : (
-          <RegisterForm changeForm={changeForm} />
+          <RegisterForm
+            changeForm={changeForm}
+            handleAlertOpen={handleAlertOpen}
+            setAlertMessage={setAlertMessage}
+          />
         )}
       </Grid>
+      {/* Alert Message on top */}
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        key={`top,center`}
+        open={showAlert}
+        onClose={handleAlertClose}
+        ContentProps={{
+          "aria-describedby": "message-id"
+        }}
+        message={<span id="message-id">{alertMessage}</span>}
+      />
     </div>
   );
 }

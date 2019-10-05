@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Menu() {
+export default function Menu({ history, getCoordinatesByLogin }) {
   const classes = useStyles();
   const [state, setState] = React.useState({
     top: false,
@@ -27,21 +27,42 @@ export default function Menu() {
     right: false
   });
 
+  React.useEffect(() => {
+    console.log(currentMonth);
+  });
+
+  function logout() {
+    localStorage.setItem("loginValid", "false");
+    history.push("/");
+  }
+
   const toggleDrawer = (side, open) => event => {
     setState({ ...state, [side]: open });
   };
+  function range(startAt = 0, size) {
+    return [...Array(size).keys()].map(i => i + startAt);
+  }
+  const months = [
+    { name: "Janeiro", tag: "JAN", days: range(1, 31) },
+    { name: "Fevereiro", tag: "FEB", days: range(1, 28) },
+    { name: "Março", tag: "MAR", days: range(1, 31) },
+    { name: "Abril", tag: "APR", days: range(1, 30) },
+    { name: "Maio", tag: "MAY", days: range(1, 31) },
+    { name: "Junho", tag: "JUN", days: range(1, 30) },
+    { name: "Julho", tag: "JUL", days: range(1, 31) },
+    { name: "Agosto", tag: "AUG", days: range(1, 31) },
+    { name: "Setembro", tag: "SEP", days: range(1, 30) },
+    { name: "Outubro", tag: "OCT", days: range(1, 31) },
+    { name: "Novembro", tag: "NOV", days: range(1, 30) },
+    { name: "Dezembro", tag: "DEC", days: range(1, 31) }
+  ];
+  const [currentMonth, setCurrentMonth] = React.useState(months[0]);
 
-  const [values, setValues] = React.useState({
-    month: ""
-  });
-  const handleChange = event => {
-    setValues(oldValues => ({
-      ...oldValues,
-      [event.target.name]: event.target.value
-    }));
+  const handleChange = e => {
+    setCurrentMonth(months.find(month => month.tag === e.target.value));
   };
 
-  const sideList = side => (
+  const sideContent = side => (
     <div
       className={classes.list}
       role="presentation"
@@ -51,67 +72,56 @@ export default function Menu() {
       <FormControl className={classes.formControl}>
         <InputLabel htmlFor="month-helper">Escolha o mês</InputLabel>
         <Select
-          value={values.month}
+          value={currentMonth.tag}
           onChange={handleChange}
           inputProps={{
-            name: "month",
+            name: "currentMonth",
             id: "month-helper"
           }}
         >
-          <MenuItem value={1}>Janeiro</MenuItem>
-          <MenuItem value={2}>Fevereiro</MenuItem>
-          <MenuItem value={3}>Março</MenuItem>
-          <MenuItem value={4}>Abril</MenuItem>
-          <MenuItem value={5}>Maio</MenuItem>
-          <MenuItem value={6}>Junho</MenuItem>
-          <MenuItem value={7}>Julho</MenuItem>
-          <MenuItem value={8}>Agosto</MenuItem>
-          <MenuItem value={9}>Setembro</MenuItem>
-          <MenuItem value={10}>Outubro</MenuItem>
-          <MenuItem value={11}>Novembro</MenuItem>
-          <MenuItem value={12}>Dezembro</MenuItem>
+          {/* Month options */}
+          {months.map(month => (
+            <MenuItem key={month.tag} value={month.tag}>
+              {month.name}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
+      {/* Days buttons */}
+      {currentMonth.days.map(day => (
+        <Button
+          key={day}
+          onClick={() => getCoordinatesByLogin(day, currentMonth.tag, 2019)}
+        >
+          {day}
+        </Button>
+      ))}
 
-      <Button>1</Button>
-      <Button>2</Button>
-      <Button>3</Button>
-      <Button>4</Button>
-      <Button>5</Button>
-      <Button>6</Button>
-      <Button>7</Button>
-      <Button>8</Button>
-      <Button>9</Button>
-      <Button>10</Button>
-      <Button>11</Button>
-      <Button>12</Button>
-      <Button>13</Button>
-      <Button>14</Button>
-      <Button>15</Button>
-      <Button>16</Button>
-      <Button>17</Button>
-      <Button>18</Button>
-      <Button>19</Button>
-      <Button>20</Button>
-      <Button>21</Button>
-      <Button>22</Button>
-      <Button>23</Button>
-      <Button>24</Button>
-      <Button>25</Button>
-      <Button>26</Button>
-      <Button>27</Button>
-      <Button>28</Button>
-      <Button>29</Button>
-      <Button>30</Button>
-      <Button>31</Button>
+      {/* LOGOUT BUTTON */}
+      <div style={{ position: "relative", top: "50%" }}>
+        <Button
+          color="secondary"
+          style={{ textAlign: "left", display: "block", width: "100%" }}
+          onClick={logout}
+        >
+          Logout
+        </Button>
+      </div>
     </div>
   );
 
   return (
     <div>
-      <Button onClick={toggleDrawer("left", true)}>Open Left</Button>
+      <Button
+        variant="outlined"
+        color="default"
+        style={{ position: "absolute", top: 5, left: 5 }}
+        onClick={toggleDrawer("left", true)}
+      >
+        MENU
+      </Button>
       <Drawer open={state.left} onClose={toggleDrawer("left", false)}>
-        {sideList("left")}
+        {sideContent("left")}
       </Drawer>
     </div>
   );

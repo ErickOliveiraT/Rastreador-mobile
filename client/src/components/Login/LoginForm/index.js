@@ -1,33 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
+import { login } from "../../../store/ducks/auth";
 import { useStyles } from "../style";
-import { Link } from "react-router-dom";
 
-const AdapterLink = React.forwardRef((props, ref) => (
-  <Link innerRef={ref} {...props} />
-));
-
-export default function LoginForm({ changeForm }) {
+export default function LoginForm({ changeForm, history }) {
   const classes = useStyles();
+  const [user, setUser] = useState({ login: "", password: "" });
+  const dispatch = useDispatch();
+
+  const submitLogin = async () => {
+    await dispatch(login(user)).then(res => {
+      localStorage.setItem("loginValid", res.payload.data.valid.toString());
+      history.push("/dashboard");
+    });
+  };
+
+  const updateUser = e => {
+    const newUser = user;
+    newUser[e.target.id] = e.target.value;
+    setUser(newUser);
+  };
+
   return (
     <Grid item xs={12}>
       <Grid item xs={12}>
         <TextField
-          id="standard-name"
+          id="login"
           label="Usuário"
           className={classes.textField}
-          onChange={() => {}}
+          onChange={updateUser}
           margin="normal"
         />
       </Grid>
       <Grid item xs={12}>
         <TextField
-          id="standard-name"
+          id="password"
           label="Senha"
+          type="password"
           className={classes.textField}
-          onChange={() => {}}
+          onChange={updateUser}
           margin="normal"
         />
       </Grid>
@@ -35,10 +49,9 @@ export default function LoginForm({ changeForm }) {
         <Button
           variant="contained"
           color="primary"
-          component={AdapterLink}
-          to="/dashboard"
           className={classes.button}
           style={{ backgroundColor: "#59a8b5" }}
+          onClick={submitLogin}
         >
           Entrar
         </Button>

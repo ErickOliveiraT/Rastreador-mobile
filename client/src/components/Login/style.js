@@ -17,8 +17,6 @@ export const useStyles = makeStyles(theme => ({
     width: 400
   },
   textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
     width: 400
   },
   input: {
