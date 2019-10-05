@@ -6,7 +6,7 @@ Essa API forcece todas as operações úteis para as entidades 'Coordenada' e 'U
 #
 | Operação | Método | Endereço |
 | ------ | ------ | ------ |
-| Cadastrar Usuário | POST | host/adduser - (Parâmetros: name, login, password) |
+| Cadastrar Usuário | POST | host/adduser - (Parâmetros: name, login, password, email) |
 | Consultar Usuário Único | GET | host/users/{login} |
 | Consultar Todos Usuários| GET | host/users |
 | Autenticar Usuário | POST | host/autenticate - (Parâmetros: login, password)|
