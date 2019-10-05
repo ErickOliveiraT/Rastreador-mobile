@@ -2,7 +2,7 @@ const express = require('express');
 const mysql = require('mysql')
 const md5 = require('md5')
 
-const app = express();         
+const app = express();
 const port = 3000;
 
 const router = express.Router();
@@ -18,12 +18,12 @@ function execSQLQuery(sqlQry, res) {
         password: '',
         database: 'rastreador'
     });
-   
-    connection.query(sqlQry, function(error, results, fields){
-        if(error) 
-          res.json(error);
+
+    connection.query(sqlQry, function (error, results, fields) {
+        if (error)
+            res.json(error);
         else
-          res.json(results);
+            res.json(results);
         connection.end();
     });
 }
@@ -31,7 +31,7 @@ function execSQLQuery(sqlQry, res) {
 //Token de autenticação
 function getToken() {
     const pos = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyxz0123456789'
-    var shuffled = pos.split('').sort(() => {return 0.5-Math.random()}).join('')
+    var shuffled = pos.split('').sort(() => { return 0.5 - Math.random() }).join('')
     let token = ''
     for (let i = 0; i < 32; i++) {
         let rd = Math.floor((Math.random() * pos.length));
@@ -53,7 +53,7 @@ router.get('/coordenadas', (req, res) => { //Consulta todas coordenadas
 
 router.get('/users/:login?', (req, res) => { //Consulta Usuário por login
     let filter = ''
-    if(req.params.login) filter = `WHERE login = '${req.params.login}'`
+    if (req.params.login) filter = `WHERE login = '${req.params.login}'`
     execSQLQuery('SELECT * FROM users ' + filter, res);
 })
 
@@ -67,15 +67,15 @@ router.post('/adduser', (req, res) => { //Adiciona um novo usuário
 router.post('/addcoordenada', (req, res) => { //Adiciona uma nova coordenada
     const login = req.body.login
     const latitude = req.body.latitude
-    const longitude = req.body.longitude    
+    const longitude = req.body.longitude
     var today = new Date();
-    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
     var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    var dateTime = date+' '+time;
+    var dateTime = date + ' ' + time;
     execSQLQuery(`INSERT INTO coordenadas(login,latitude,longitude,hour) VALUES('${login}','${latitude}','${longitude}','${dateTime}')`, res);
 });
 
-router.post('/autenticate', (req,res) => { //Autentica um usuário
+router.post('/autenticate', (req, res) => { //Autentica um usuário
     const login = req.body.login
     const password = req.body.password
     let password_hash = md5(password)
@@ -88,32 +88,32 @@ router.post('/autenticate', (req,res) => { //Autentica um usuário
         password: '',
         database: 'rastreador'
     });
-   
-    connection.query(sqlQry, function(error, results, fields){
-        if(error) //Erro na consulta
-            res.json({"valid":false,"error":error})
+
+    connection.query(sqlQry, function (error, results, fields) {
+        if (error) //Erro na consulta
+            res.json({ "valid": false, "error": error })
         else {
-          if (results[0] == undefined || results[0] === undefined) { //Usuário não existe
-            res.json({"valid":false,"error":"Usuário não existe"})
-          }
-          else { //Usuário existe
-            if (results[0].password === password_hash) { //Senha certa
-              res.json({"valid":true})
-            } else { //Senha errada
-                res.json({"valid":false,"error":"Senha incorreta"})
+            if (results[0] == undefined || results[0] === undefined) { //Usuário não existe
+                res.json({ "valid": false, "error": "Usuário não existe" })
             }
-          } 
+            else { //Usuário existe
+                if (results[0].password === password_hash) { //Senha certa
+                    res.json({ "valid": true })
+                } else { //Senha errada
+                    res.json({ "valid": false, "error": "Senha incorreta" })
+                }
+            }
         }
         connection.end();
     });
 });
 
 router.get('/coordenadas/:dia?/:mes?/:ano?/:login?', (req, res) => { //Consulta as coordenadas do dia
-    if(req.params.ano && req.params.ano && req.params.dia && req.params.login) {
+    if (req.params.ano && req.params.ano && req.params.dia && req.params.login) {
         let filter = req.params.ano + '-' + req.params.mes + '-' + req.params.dia + `%' and login = '${req.params.login}';`
         execSQLQuery(`SELECT * FROM coordenadas WHERE hour LIKE '${filter}`, res);
     } else {
-        res.json({"erro":"Requisição Inválida"})
+        res.json({ "erro": "Requisição Inválida" })
     }
 })
 
