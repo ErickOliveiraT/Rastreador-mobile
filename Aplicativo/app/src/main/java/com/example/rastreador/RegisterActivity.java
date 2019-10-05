@@ -11,10 +11,12 @@ import android.widget.Toast;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText name, login, password;
+    private EditText name, login, password, email;
     private Button btn_regist;
 
     @Override
@@ -25,6 +27,7 @@ public class RegisterActivity extends AppCompatActivity {
         name = findViewById(R.id.etNome);
         login = findViewById(R.id.etLogin);
         password = findViewById(R.id.etSenha);
+        email = findViewById(R.id.etEmail);
         btn_regist = findViewById(R.id.btn_regist);
 
         btn_regist.setOnClickListener(new View.OnClickListener() {
@@ -33,26 +36,32 @@ public class RegisterActivity extends AppCompatActivity {
                 String mNome = name.getText().toString().trim();
                 String mLogin = login.getText().toString().trim();
                 String mSenha = password.getText().toString().trim();
+                String mEmail = email.getText().toString().trim();
 
-                if (!mNome.isEmpty() || !mLogin.isEmpty() || !mSenha.isEmpty()) {
-                    Cadastrar(mLogin,mSenha,mNome);
+                if(isValidEmailAddressRegex(mEmail)) {
+                    if (!mNome.isEmpty() && !mLogin.isEmpty() && !mSenha.isEmpty()) {
+                        Cadastrar(mLogin,mSenha,mNome,mEmail);
+                    } else {
+                        name.setError("Insira seu nome");
+                        login.setError("Insira um login");
+                        password.setError("Insira uma senha");
+                    }
                 } else {
-                    name.setError("Insira seu nome");
-                    login.setError("Insira um login");
-                    password.setError("Insira uma senha");
+                    email.setError("Insira um email válido");
                 }
             }
         });
     }
 
-    public void Cadastrar(String login, String senha, String nome){
+    public void Cadastrar(String login, String senha, String nome, String email) {
 
         JsonObject json = new JsonObject();
         json.addProperty("name", nome);
         json.addProperty("login", login);
         json.addProperty("password", senha);
+        json.addProperty("email", email);
 
-        Ion.with(this).load("http://192.168.0.103:3000/adduser")
+        Ion.with(this).load("http://192.168.0.107:3000/adduser")
                 .setJsonObjectBody(json)
                 .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
             @Override
@@ -67,5 +76,18 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public static boolean isValidEmailAddressRegex(String email) {
+        boolean isEmailIdValid = false;
+        if (email != null && email.length() > 0) {
+            String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+            Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+            Matcher matcher = pattern.matcher(email);
+            if (matcher.matches()) {
+                isEmailIdValid = true;
+            }
+        }
+        return isEmailIdValid;
     }
 }

@@ -138,7 +138,7 @@ public class RastreioActivity extends AppCompatActivity {
         json.addProperty("latitude", latitude);
         json.addProperty("longitude", longitude);
 
-        Ion.with(this).load("http://192.168.0.103:3000/addcoordenada")
+        Ion.with(this).load("http://192.168.0.107:3000/addcoordenada")
                 .setJsonObjectBody(json)
                 .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
             @Override
