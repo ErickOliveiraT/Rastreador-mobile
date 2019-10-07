@@ -8,7 +8,7 @@ export const Types = {
 // Reducer
 const initialState = {
   name: "",
-  login: "",
+  login: "bruno",
   password: ""
 };
 

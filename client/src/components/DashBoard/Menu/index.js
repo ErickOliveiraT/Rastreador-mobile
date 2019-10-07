@@ -28,7 +28,7 @@ export default function Menu({ history, getCoordinatesByLogin }) {
   });
 
   React.useEffect(() => {
-    console.log(currentMonth);
+    // console.log(currentMonth);
   });
 
   function logout() {
@@ -43,23 +43,23 @@ export default function Menu({ history, getCoordinatesByLogin }) {
     return [...Array(size).keys()].map(i => i + startAt);
   }
   const months = [
-    { name: "Janeiro", tag: "JAN", days: range(1, 31) },
-    { name: "Fevereiro", tag: "FEB", days: range(1, 28) },
-    { name: "Março", tag: "MAR", days: range(1, 31) },
-    { name: "Abril", tag: "APR", days: range(1, 30) },
-    { name: "Maio", tag: "MAY", days: range(1, 31) },
-    { name: "Junho", tag: "JUN", days: range(1, 30) },
-    { name: "Julho", tag: "JUL", days: range(1, 31) },
-    { name: "Agosto", tag: "AUG", days: range(1, 31) },
-    { name: "Setembro", tag: "SEP", days: range(1, 30) },
-    { name: "Outubro", tag: "OCT", days: range(1, 31) },
-    { name: "Novembro", tag: "NOV", days: range(1, 30) },
-    { name: "Dezembro", tag: "DEC", days: range(1, 31) }
+    { name: "Janeiro", month: 1, days: range(1, 31) },
+    { name: "Fevereiro", month: 2, days: range(1, 28) },
+    { name: "Março", month: 3, days: range(1, 31) },
+    { name: "Abril", month: 4, days: range(1, 30) },
+    { name: "Maio", month: 5, days: range(1, 31) },
+    { name: "Junho", month: 6, days: range(1, 30) },
+    { name: "Julho", month: 7, days: range(1, 31) },
+    { name: "Agosto", month: 8, days: range(1, 31) },
+    { name: "Setembro", month: 9, days: range(1, 30) },
+    { name: "Outubro", month: 10, days: range(1, 31) },
+    { name: "Novembro", month: 11, days: range(1, 30) },
+    { name: "Dezembro", month: 12, days: range(1, 31) }
   ];
-  const [currentMonth, setCurrentMonth] = React.useState(months[0]);
+  const [currentMonth, setCurrentMonth] = React.useState(months[9]);
 
   const handleChange = e => {
-    setCurrentMonth(months.find(month => month.tag === e.target.value));
+    setCurrentMonth(months.find(month => month.month === e.target.value));
   };
 
   const sideContent = side => (
@@ -72,7 +72,7 @@ export default function Menu({ history, getCoordinatesByLogin }) {
       <FormControl className={classes.formControl}>
         <InputLabel htmlFor="month-helper">Escolha o mês</InputLabel>
         <Select
-          value={currentMonth.tag}
+          value={currentMonth.month}
           onChange={handleChange}
           inputProps={{
             name: "currentMonth",
@@ -81,7 +81,7 @@ export default function Menu({ history, getCoordinatesByLogin }) {
         >
           {/* Month options */}
           {months.map(month => (
-            <MenuItem key={month.tag} value={month.tag}>
+            <MenuItem key={month.month} value={month.month}>
               {month.name}
             </MenuItem>
           ))}
@@ -91,7 +91,7 @@ export default function Menu({ history, getCoordinatesByLogin }) {
       {currentMonth.days.map(day => (
         <Button
           key={day}
-          onClick={() => getCoordinatesByLogin(day, currentMonth.tag, 2019)}
+          onClick={() => getCoordinatesByLogin(day, currentMonth.month, 2019)}
         >
           {day}
         </Button>

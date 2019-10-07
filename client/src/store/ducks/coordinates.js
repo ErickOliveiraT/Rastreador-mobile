@@ -5,10 +5,11 @@ export const Types = {
 
 // Reducer
 const initialState = {
-  login: "",
-  day: 1,
-  monthTag: "JAN",
-  year: 2019
+  login: "bruno",
+  day: 5,
+  month: 10,
+  year: 2019,
+  points: []
 };
 
 export function coordinatesReducer(state = initialState, action) {
@@ -23,17 +24,17 @@ export function coordinatesReducer(state = initialState, action) {
 }
 
 // Action Creators
-export function getCoordinates(login, day, monthTag, year) {
+export function getCoordinates(login, day, month, year) {
   return {
     type: Types.GET_COORDINATES,
     payload: {
       request: {
-        url: `/coordenadas/${day}/${monthTag}/${year}/${login}`,
+        url: `/coordenadas/${day}/${month}/${year}/${login}`,
         method: "GET",
         data: {
           login,
           day,
-          month: monthTag,
+          month,
           year
         }
       }

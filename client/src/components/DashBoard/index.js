@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ReactMapGL, { Marker } from "react-map-gl";
 import Menu from "./Menu";
 import { getCoordinates } from "../../store/ducks/coordinates";
+import PolylineOverlay from "./PolylineOverlay";
 
 export default function DashBoard(props) {
   const user = useSelector(state => state.user);
-  const coordinates = useSelector(state => state.coordinates);
-  const [marker, setMarker] = useState({
-    latitude: -22.415865,
-    longitude: -45.4676787
+  const [coordinates, setCoordinates] = useState({
+    lastCoordinate: [0, 0],
+    points: []
   });
   const [viewport, setViewPort] = useState({
     width: window.innerWidth,
@@ -20,32 +20,39 @@ export default function DashBoard(props) {
   });
   const dispatch = useDispatch();
 
-  const getCoordinatesByLogin = async (day, monthTag, year) => {
-    await dispatch(getCoordinates(user.login, day, monthTag, year)).then(
-      res => {
-        console.log(res.payload);
-      }
-    );
-  };
-  // componentDidMount() {
-  //   let intervalRef = setInterval(() => {
-  //     let latitude = this.state.marker.latitude + 0.00001;
-  //     let longitude = this.state.marker.longitude + 0.00001;
-  //     let marker = { latitude, longitude };
-  //     console.log(this.state.marker.latitude);
-  //     this.setState({
-  //       marker
-  //     });
-  //   }, 1000);
-  //   this.setState({
-  //     ...this.state,
-  //     intervalRef
-  //   });
-  // }
+  useEffect(() => {
+    //const d = new Date();
+    //getCoordinatesByLogin(d.getDate(), d.getMonth() + 1, d.getFullYear(), true);
+    const intervalRef = setInterval(() => {
+      // getLastCoordinate()
+    }, 1000);
+    return () => clearInterval(intervalRef);
+  }, []);
 
-  // componentWillUnmount() {
-  //   clearInterval(this.state.intervalRef);
-  // }
+  const getCoordinatesByLogin = (
+    day,
+    month,
+    year,
+    justLastCoordinate = false
+  ) => {
+    // each call of this function erase the coordinates
+    setCoordinates(prevState => ({ ...prevState, points: [] }));
+    dispatch(getCoordinates(user.login, day, month, year)).then(res => {
+      let newCoordinate = [];
+      const resCoordinates = res.payload.data;
+      if (resCoordinates.length > 0) {
+        for (let i = 0; i < resCoordinates.length; i++) {
+          newCoordinate.push([
+            Number.parseFloat(resCoordinates[i].longitude),
+            Number.parseFloat(resCoordinates[i].latitude)
+          ]);
+        }
+        setCoordinates(prevState => ({ ...prevState, points: newCoordinate }));
+      } else {
+        //TODO: mensagem de sem coordenadas nesse dia
+      }
+    });
+  };
 
   return (
     <div>
@@ -55,18 +62,21 @@ export default function DashBoard(props) {
         }
         {...viewport}
         onViewportChange={viewport => setViewPort(viewport)}
+        mapStyle="mapbox://styles/mapbox/streets-v11"
       >
+        <PolylineOverlay points={coordinates.points} />
         <Marker
-          latitude={marker.latitude}
-          longitude={marker.longitude}
+          latitude={coordinates.lastCoordinate[1]}
+          longitude={coordinates.lastCoordinate[0]}
           offsetLeft={-20}
           offsetTop={-10}
         >
           <img
             src="https://material-ui.com/static/images/avatar/1.jpg"
             alt=""
-            width="50"
-            height="50"
+            width="30"
+            height="30"
+            style={{ borderRadius: 100 }}
           />
         </Marker>
       </ReactMapGL>
