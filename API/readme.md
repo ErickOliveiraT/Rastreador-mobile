@@ -15,3 +15,4 @@ Essa API forcece todas as operações úteis para as entidades 'Coordenada' e 'U
 | Consultar Coordenadas por Dia por Usuário | GET | host/coordenadas/{dia}/{mes}/{ano}/{login} |
 | Solicitar Token para Recuperar Senha | POST | host/solicitarectoken/{login} |
 | Salvar Token de Recuperação gerado | POST | host/addrectoken/{login}/{token} |
+| Validar Token de Recuperação de Senha | POST | host/validarectoken/{login}/{token} |

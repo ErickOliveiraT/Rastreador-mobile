@@ -162,5 +162,32 @@ router.post('/solicitarectoken', (req, res) => { //Solicita um token para recupe
         connection.end();
     });
 });
+
+router.post('/validarectoken', (req, res) => { //Valida um token para recuperação de senha
+    const login = req.body.login
+    const token = req.body.token
+    const sqlQry = `SELECT recToken from users where login = '${login}'`
+
+    const connection = mysql.createConnection({
+        host: 'localhost',
+        port: 3306,
+        user: 'root',
+        password: '',
+        database: 'rastreador'
+    });
+   
+    connection.query(sqlQry, function(error, results, fields) {
+        if(error) //Erro na consulta
+            res.json({"valid":false,"error":error})
+        else {
+            if (results[0].recToken == token) { //Token válido
+                res.json({"valid":true})
+            } else { //Token inválido
+                res.json({"valid":false,"error":"Token inválido"})
+            }
+        }
+        connection.end();
+    });
+});
        
 app.listen(port)
