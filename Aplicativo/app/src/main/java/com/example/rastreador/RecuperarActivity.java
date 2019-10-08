@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
@@ -16,6 +17,7 @@ public class RecuperarActivity extends AppCompatActivity {
 
     private EditText campoLogin;
     private Button btn_recuperar;
+    private ProgressBar progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,8 @@ public class RecuperarActivity extends AppCompatActivity {
 
         btn_recuperar = findViewById(R.id.btn_recuperar2);
         campoLogin = findViewById(R.id.campoLogin);
+        progress = findViewById(R.id.progressBar);
+        progress.setVisibility(View.INVISIBLE);
 
         btn_recuperar.setOnClickListener(new View.OnClickListener() { //Chama Função de Login
             @Override
@@ -31,6 +35,8 @@ public class RecuperarActivity extends AppCompatActivity {
                 String mLogin = campoLogin.getText().toString().trim();
 
                 if (!mLogin.isEmpty()) {
+                    progress.setVisibility(View.VISIBLE);
+                    btn_recuperar.setClickable(false);
                     solicitaToken(mLogin);
                 } else {
                     campoLogin.setError("Insira seu login");
