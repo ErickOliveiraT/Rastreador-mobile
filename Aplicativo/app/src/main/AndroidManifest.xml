@@ -13,8 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Recuperar2Acitivity"></activity>
+        <activity android:name=".TrocarSenhaActivity"></activity>
+        <activity android:name=".TokenActivity" />
         <activity android:name=".RecuperarActivity" />
+        <activity android:name=".Recuperar2Acitivity" />
         <activity android:name=".RastreioActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MainActivity">

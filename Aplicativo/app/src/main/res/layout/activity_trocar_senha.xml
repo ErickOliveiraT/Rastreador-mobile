@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6E6E6"
+    android:orientation="vertical"
+    android:paddingLeft="30dp"
+    android:paddingTop="80dp"
+    android:paddingRight="30dp"
+    tools:context=".RegisterActivity">
+
+    <ImageView
+        android:id="@+id/imgtrocar"
+        android:layout_width="match_parent"
+        android:layout_height="104dp"
+        app:srcCompat="@drawable/change" />
+
+    <EditText
+        android:id="@+id/novaSenha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Nova Senha"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/novaSenha2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Confirme a nova Senha"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/btn_mudar"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="#283F9B"
+        android:text="Confirmar"
+        android:textColor="@android:color/white" />
+
+</LinearLayout>
