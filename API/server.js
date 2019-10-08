@@ -151,8 +151,7 @@ router.post('/solicitarectoken', (req, res) => { //Solicita um token para recupe
                 let msg = data.toString()
                 console.log(msg)
                 if (msg == 'Email enviado') { //Email enviado
-                    console.log('Deu certo')
-                    res.json({"valid":true})
+                    res.json({"valid":true,"mail":email})
                 } else { //Email não enviado
                     res.json({"valid":false,"error":"Falha ao enviar o email de recuperação"})
                 }
@@ -188,6 +187,12 @@ router.post('/validarectoken', (req, res) => { //Valida um token para recuperaç
         }
         connection.end();
     });
+});
+
+router.post('/trocarsenha', (req, res) => { //Troca a senha de um usuário
+    const login = req.body.login
+    const password = md5(req.body.password)
+    execSQLQuery(`UPDATE users SET password = '${password}' where login = '${login}'`, res)
 });
        
 app.listen(port)
