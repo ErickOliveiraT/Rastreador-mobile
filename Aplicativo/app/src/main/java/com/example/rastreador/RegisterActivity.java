@@ -68,11 +68,21 @@ public class RegisterActivity extends AppCompatActivity {
             public void onCompleted(Exception e, JsonObject result) {
                 if(e != null) { //Erro no cadastro
                     Toast.makeText(getApplicationContext(), "Erro: " + e.toString(), Toast.LENGTH_LONG).show();
-                } else { //Cadastro efetuado
-                    Toast.makeText(getApplicationContext(), "Usuário Cadastrado", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-                    finish();
+                } else {
+                    String erroUserDuplicado = "";
+                    try {
+                        erroUserDuplicado = result.get("code").getAsString();
+                    } catch (Exception ex) {
+                        //
+                    }
+                    if (erroUserDuplicado.equals("ER_DUP_ENTRY")) { //Caso o usuário já exista
+                        Toast.makeText(getApplicationContext(), "Esse usuário já está cadastrado", Toast.LENGTH_LONG).show();
+                    } else { //Cadastro Efetuado
+                        Toast.makeText(getApplicationContext(), "Usuário Cadastrado", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             }
         });
