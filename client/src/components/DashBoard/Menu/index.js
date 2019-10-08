@@ -1,4 +1,5 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import Button from "@material-ui/core/Button";
@@ -18,23 +19,21 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Menu({ history, getCoordinatesByLogin }) {
+export default function Menu({
+  handleLogout,
+  getCoordinates,
+  handleCancel,
+  handleInit
+}) {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.user);
   const [state, setState] = React.useState({
     top: false,
     left: false,
     bottom: false,
     right: false
   });
-
-  React.useEffect(() => {
-    // console.log(currentMonth);
-  });
-
-  function logout() {
-    localStorage.setItem("loginValid", "false");
-    history.push("/");
-  }
 
   const toggleDrawer = (side, open) => event => {
     setState({ ...state, [side]: open });
@@ -91,18 +90,31 @@ export default function Menu({ history, getCoordinatesByLogin }) {
       {currentMonth.days.map(day => (
         <Button
           key={day}
-          onClick={() => getCoordinatesByLogin(day, currentMonth.month, 2019)}
+          onClick={() => {
+            handleCancel();
+            dispatch(getCoordinates(day, currentMonth.month, 2019, user.login));
+          }}
         >
           {day}
         </Button>
       ))}
-
+      <div style={{ position: "relative", top: "30%" }}>
+        <Button
+          color="secondary"
+          style={{ textAlign: "left", display: "block", width: "100%" }}
+          onClick={() => {
+            handleInit();
+          }}
+        >
+          Posição Atual
+        </Button>
+      </div>{" "}
       {/* LOGOUT BUTTON */}
       <div style={{ position: "relative", top: "50%" }}>
         <Button
           color="secondary"
           style={{ textAlign: "left", display: "block", width: "100%" }}
-          onClick={logout}
+          onClick={handleLogout}
         >
           Logout
         </Button>

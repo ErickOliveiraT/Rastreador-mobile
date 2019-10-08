@@ -1,22 +1,43 @@
+import axios from "axios";
+
 // Action Types
 export const Types = {
-  GET_COORDINATES: "coordinates/GET_COORDINATES"
+  GET_COORDINATES_STARTED: "coordinates/GET_COORDINATES_STARTED",
+  GET_COORDINATES_SUCCESS: "coordinates/GET_COORDINATES_SUCCESS",
+  GET_COORDINATES_FAILED: "coordinates/GET_COORDINATES_FAILED",
+  GET_LAST_COORDINATES_SUCCESS: "coordinates/GET_LAST_COORDINATES_SUCCESS"
 };
 
 // Reducer
 const initialState = {
-  login: "bruno",
-  day: 5,
-  month: 10,
-  year: 2019,
-  points: []
+  intervalRef: 0,
+  lastCoordinate: [0, 0],
+  points: [],
+  loading: false
 };
 
 export function coordinatesReducer(state = initialState, action) {
   switch (action.type) {
-    case Types.GET_COORDINATES:
+    case Types.GET_COORDINATES_STARTED:
       return {
-        ...state
+        ...state,
+        lastCoordinate: [0, 0],
+        points: [],
+        loading: false
+      };
+    case Types.GET_COORDINATES_SUCCESS:
+      return {
+        ...state,
+        points: action.payload.points,
+        lastCoordinate: action.payload.lastCoordinate,
+        loading: false
+      };
+    case Types.GET_LAST_COORDINATES_SUCCESS:
+      return {
+        ...state,
+        lastCoordinate: action.payload.lastCoordinate,
+        points: [],
+        loading: false
       };
     default:
       return state;
@@ -24,20 +45,72 @@ export function coordinatesReducer(state = initialState, action) {
 }
 
 // Action Creators
-export function getCoordinates(login, day, month, year) {
-  return {
-    type: Types.GET_COORDINATES,
-    payload: {
-      request: {
-        url: `/coordenadas/${day}/${month}/${year}/${login}`,
-        method: "GET",
-        data: {
-          login,
-          day,
-          month,
-          year
+// get all records of coordinates in the date day/month/year,
+// and fill the lastcoordinate with the last coordinate of this date
+export function getCoordinates(day, month, year, login) {
+  return function(dispatch) {
+    // in getCoordinatesStarted erase the state
+    dispatch(getCoordinatesStarted());
+    axios
+      .get(`http://localhost:4000/coordenadas/${day}/${month}/${year}/${login}`)
+      .then(res => {
+        let newPoints = [];
+        const resCoordinates = res.data;
+        const lastCoordinate = [];
+        if (resCoordinates.length > 0) {
+          for (let i = 0; i < resCoordinates.length; i++) {
+            newPoints.push([
+              Number.parseFloat(resCoordinates[i].longitude),
+              Number.parseFloat(resCoordinates[i].latitude)
+            ]);
+          }
+          // last position becomes the last position of the date
+          lastCoordinate.push(newPoints[newPoints.length - 1]);
+          dispatch(getCoordinatesSuccess(newPoints, lastCoordinate[0]));
         }
-      }
-    }
+        // else {
+        //   dispatch(getCoordinatesFailed());
+        // }
+      })
+      .catch(error => {
+        // dispatch(getCoordinatesFailed());
+      });
   };
 }
+
+// get the last coordinate of the user and delete the route points
+export function getLastCoordinate(login) {
+  return function(dispatch) {
+    axios
+      .get(`http://localhost:4000/ultimacoordenada/${login}`)
+      .then(res => {
+        const lastCoordinate = [
+          Number.parseFloat(res.data[0].longitude),
+          Number.parseFloat(res.data[0].latitude)
+        ];
+        dispatch(getLastCoordinatesSuccess(lastCoordinate));
+      })
+      .catch(error => {
+        // dispatch(getLastCoordinatesFailed());
+      });
+  };
+}
+
+const getCoordinatesStarted = () => ({
+  type: Types.GET_COORDINATES_STARTED
+});
+
+const getCoordinatesSuccess = (points, lastCoordinate) => ({
+  type: Types.GET_COORDINATES_SUCCESS,
+  payload: {
+    points,
+    lastCoordinate
+  }
+});
+
+const getLastCoordinatesSuccess = lastCoordinate => ({
+  type: Types.GET_LAST_COORDINATES_SUCCESS,
+  payload: {
+    lastCoordinate
+  }
+});

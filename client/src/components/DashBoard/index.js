@@ -1,16 +1,18 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import ReactMapGL, { Marker } from "react-map-gl";
 import Menu from "./Menu";
-import { getCoordinates } from "../../store/ducks/coordinates";
 import PolylineOverlay from "./PolylineOverlay";
+import { logout } from "../../store/ducks/user";
+import {
+  getLastCoordinate,
+  getCoordinates
+} from "../../store/ducks/coordinates";
 
 export default function DashBoard(props) {
+  const dispatch = useDispatch();
   const user = useSelector(state => state.user);
-  const [coordinates, setCoordinates] = useState({
-    lastCoordinate: [0, 0],
-    points: []
-  });
+  const coordinates = useSelector(state => state.coordinates);
   const [viewport, setViewPort] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -18,40 +20,37 @@ export default function DashBoard(props) {
     longitude: -45.4676787,
     zoom: 16
   });
-  const dispatch = useDispatch();
+  let intervalRef = useRef([]);
 
   useEffect(() => {
-    //const d = new Date();
-    //getCoordinatesByLogin(d.getDate(), d.getMonth() + 1, d.getFullYear(), true);
-    const intervalRef = setInterval(() => {
-      // getLastCoordinate()
-    }, 1000);
-    return () => clearInterval(intervalRef);
+    dispatch(getLastCoordinate(user.login));
+    // interval to get the last coordinate by each 2 seconds
+    let id = setInterval(() => {
+      dispatch(getLastCoordinate(user.login));
+    }, 2000);
+    intervalRef.current.push(id);
+    // this return is the same as componentWillUnmount
+    // when unmount component clear the interval that get last coordinate
+    return () => {
+      for (let i = 0; i < intervalRef.current.length; i++)
+        clearInterval(intervalRef.current[i]);
+    };
   }, []);
 
-  const getCoordinatesByLogin = (
-    day,
-    month,
-    year,
-    justLastCoordinate = false
-  ) => {
-    // each call of this function erase the coordinates
-    setCoordinates(prevState => ({ ...prevState, points: [] }));
-    dispatch(getCoordinates(user.login, day, month, year)).then(res => {
-      let newCoordinate = [];
-      const resCoordinates = res.payload.data;
-      if (resCoordinates.length > 0) {
-        for (let i = 0; i < resCoordinates.length; i++) {
-          newCoordinate.push([
-            Number.parseFloat(resCoordinates[i].longitude),
-            Number.parseFloat(resCoordinates[i].latitude)
-          ]);
-        }
-        setCoordinates(prevState => ({ ...prevState, points: newCoordinate }));
-      } else {
-        //TODO: mensagem de sem coordenadas nesse dia
-      }
-    });
+  const handleLogout = () => {
+    dispatch(logout(props.history));
+  };
+
+  const handleCancel = () => {
+    for (let i = 0; i < intervalRef.current.length; i++)
+      clearInterval(intervalRef.current[i]);
+  };
+  const handleInit = () => {
+    dispatch(getLastCoordinate(user.login));
+    let id = setInterval(() => {
+      dispatch(getLastCoordinate(user.login));
+    }, 2000);
+    intervalRef.current.push(id);
   };
 
   return (
@@ -81,8 +80,10 @@ export default function DashBoard(props) {
         </Marker>
       </ReactMapGL>
       <Menu
-        history={props.history}
-        getCoordinatesByLogin={getCoordinatesByLogin}
+        getCoordinates={getCoordinates}
+        handleLogout={handleLogout}
+        handleCancel={handleCancel}
+        handleInit={handleInit}
       />
     </div>
   );
