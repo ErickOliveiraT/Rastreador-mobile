@@ -194,5 +194,11 @@ router.post('/trocarsenha', (req, res) => { //Troca a senha de um usuário
     const password = md5(req.body.password)
     execSQLQuery(`UPDATE users SET password = '${password}' where login = '${login}'`, res)
 });
-       
+
+router.post('/autorizar', (req, res) => { //Autoriza um usuário ver as localizações
+    const master = req.body.master
+    const slave = req.body.slave
+    execSQLQuery(`INSERT INTO autorizados(master_id,slave_id) VALUES((SELECT id FROM users WHERE login = '${master}'), (SELECT id FROM users WHERE login = '${slave}'));`, res)
+});
+
 app.listen(port)

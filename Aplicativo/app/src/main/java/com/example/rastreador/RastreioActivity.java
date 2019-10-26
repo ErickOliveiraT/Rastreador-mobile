@@ -25,7 +25,7 @@ import java.util.Date;
 public class RastreioActivity extends AppCompatActivity {
 
     private Button button;
-    private Button button2;
+    private Button btnaut;
     private TextView text;
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -36,6 +36,7 @@ public class RastreioActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rastreio);
 
         button = (Button) findViewById(R.id.buttonLigar);
+        btnaut = (Button) findViewById(R.id.btnAutorizar);
         text = (TextView) findViewById(R.id.text);
         final int[] cont = {0};
 
@@ -44,6 +45,19 @@ public class RastreioActivity extends AppCompatActivity {
         final String login = it.getStringExtra("login");
         String login2 = login;
         text.setText("Olá "+login+", Pressione o botão abaixo para iniciar o rastreamento");
+
+        btnaut.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), AutorizarActivity.class);
+                Intent it = getIntent();
+                final String login = it.getStringExtra("login");
+                intent.putExtra("login", login);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
@@ -138,7 +152,7 @@ public class RastreioActivity extends AppCompatActivity {
         json.addProperty("latitude", latitude);
         json.addProperty("longitude", longitude);
 
-        Ion.with(this).load("http://192.168.0.101:3000/addcoordenada")
+        Ion.with(this).load("http://192.168.0.103:3000/addcoordenada")
                 .setJsonObjectBody(json)
                 .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
             @Override

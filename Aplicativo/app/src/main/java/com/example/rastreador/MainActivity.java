@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         json.addProperty("login", login);
         json.addProperty("password", senha);
 
-        Ion.with(this).load("http://192.168.0.101:3000/autenticate")
+        Ion.with(this).load("http://192.168.0.103:3000/autenticate")
                 .setJsonObjectBody(json)
                 .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
             @Override
