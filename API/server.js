@@ -13,7 +13,7 @@ app.use('/', router);
 //Operações do Banco de Dados:
 function execSQLQuery(sqlQry, res) {
     const connection = mysql.createConnection({
-        host: 'localhost',
+        host: '35.199.122.94',
         port: 3306,
         user: 'root',
         password: '',
@@ -84,7 +84,7 @@ router.post('/autenticate', (req,res) => { //Autentica um usuário
     const sqlQry = `SELECT password,name FROM users WHERE login = '${login}'`
 
     const connection = mysql.createConnection({
-        host: 'localhost',
+        host: '35.199.122.94',
         port: 3306,
         user: 'root',
         password: '',
@@ -130,7 +130,7 @@ router.post('/solicitarectoken', (req, res) => { //Solicita um token para recupe
     const sqlQry = `SELECT email from users where login = '${login}'`
 
     const connection = mysql.createConnection({
-        host: 'localhost',
+        host: '35.199.122.94',
         port: 3306,
         user: 'root',
         password: '',
@@ -168,7 +168,7 @@ router.post('/validarectoken', (req, res) => { //Valida um token para recuperaç
     const sqlQry = `SELECT recToken from users where login = '${login}'`
 
     const connection = mysql.createConnection({
-        host: 'localhost',
+        host: '35.199.122.94',
         port: 3306,
         user: 'root',
         password: '',
