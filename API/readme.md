@@ -13,8 +13,8 @@ Essa API forcece todas as operações úteis para as entidades 'Coordenada' e 'U
 | Adicionar Coordenadas | POST | host/addcoordenada - (Parâmetros: login, latitude, longitude) |
 | Consultar Todas Coordenadas | GET | host/coordenadas |
 | Consultar Coordenadas por Dia por Usuário | GET | host/coordenadas/{dia}/{mes}/{ano}/{login} |
-| Solicitar Token para Recuperar Senha | POST | host/solicitarectoken/{login} |
-| Salvar Token de Recuperação gerado | POST | host/addrectoken/{login}/{token} |
-| Validar Token de Recuperação de Senha | POST | host/validarectoken/{login}/{token} |
-| Trocar Senha de um Usuário | POST | host/trocarsenha/{login}/{senha} 
-| Autorizar um Usuário | POST | host/autorizar/{master}/{slave} |
+| Solicitar Token para Recuperar Senha | POST | (Parâmetros: login) |
+| Salvar Token de Recuperação gerado | POST | (Parâmetros: login, token) |
+| Validar Token de Recuperação de Senha | POST | (Parâmetros: login, token) |
+| Trocar Senha de um Usuário | POST | (Parâmetros: login, password) | 
+| Autorizar um Usuário | POST | (Parâmetros: master, slave) |
