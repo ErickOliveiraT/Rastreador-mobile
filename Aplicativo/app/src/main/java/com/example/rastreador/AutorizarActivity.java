@@ -48,7 +48,7 @@ public class AutorizarActivity extends AppCompatActivity {
         json.addProperty("master", master);
         json.addProperty("slave", slave);
 
-        Ion.with(this).load("http://192.168.0.103:3000/autorizar")
+        Ion.with(this).load("http://192.168.0.105:3000/autorizar")
                 .setJsonObjectBody(json)
                 .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
             @Override

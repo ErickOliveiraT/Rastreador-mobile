@@ -55,7 +55,7 @@ public class TrocarSenhaActivity extends AppCompatActivity {
         json.addProperty("login", login);
         json.addProperty("password", senha);
 
-        Ion.with(this).load("http://192.168.0.103:3000/trocarsenha")
+        Ion.with(this).load("http://192.168.0.105:3000/trocarsenha")
                 .setJsonObjectBody(json)
                 .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
             @Override

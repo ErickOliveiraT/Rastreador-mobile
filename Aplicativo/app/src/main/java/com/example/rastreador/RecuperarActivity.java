@@ -50,7 +50,7 @@ public class RecuperarActivity extends AppCompatActivity {
         JsonObject json = new JsonObject();
         json.addProperty("login", login);
 
-        Ion.with(this).load("http://192.168.0.103:3000/solicitarectoken")
+        Ion.with(this).load("http://192.168.0.105:3000/solicitarectoken")
                 .setJsonObjectBody(json)
                 .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
             @Override

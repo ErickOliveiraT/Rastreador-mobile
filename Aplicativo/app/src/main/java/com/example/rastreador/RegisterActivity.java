@@ -1,7 +1,6 @@
 package com.example.rastreador;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,7 +15,7 @@ import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText name, login, password, email;
+    private EditText name, login, password, email, password2;
     private Button btn_regist;
 
     @Override
@@ -27,6 +26,7 @@ public class RegisterActivity extends AppCompatActivity {
         name = findViewById(R.id.etNome);
         login = findViewById(R.id.etLogin);
         password = findViewById(R.id.etSenha);
+        password2 = findViewById(R.id.etSenha2);
         email = findViewById(R.id.etEmail);
         btn_regist = findViewById(R.id.btn_regist);
 
@@ -36,18 +36,23 @@ public class RegisterActivity extends AppCompatActivity {
                 String mNome = name.getText().toString().trim();
                 String mLogin = login.getText().toString().trim();
                 String mSenha = password.getText().toString().trim();
+                String mSenha2 = password2.getText().toString().trim();
                 String mEmail = email.getText().toString().trim();
 
-                if(isValidEmailAddressRegex(mEmail)) {
-                    if (!mNome.isEmpty() && !mLogin.isEmpty() && !mSenha.isEmpty()) {
-                        Cadastrar(mLogin,mSenha,mNome,mEmail);
+                if (mSenha.equals(mSenha2)) {
+                    if(isValidEmailAddressRegex(mEmail)) {
+                        if (!mNome.isEmpty() && !mLogin.isEmpty() && !mSenha.isEmpty() && mLogin.length() <= 50) {
+                            Cadastrar(mLogin,mSenha,mNome,mEmail);
+                        } else {
+                            name.setError("Insira seu nome");
+                            login.setError("Insira um login de até 50 caracteres");
+                            password.setError("Insira uma senha");
+                        }
                     } else {
-                        name.setError("Insira seu nome");
-                        login.setError("Insira um login");
-                        password.setError("Insira uma senha");
+                        email.setError("Insira um email válido");
                     }
                 } else {
-                    email.setError("Insira um email válido");
+                    Toast.makeText(getApplicationContext(), "As senhas não correspondem", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -61,7 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
         json.addProperty("password", senha);
         json.addProperty("email", email);
 
-        Ion.with(this).load("http://192.168.0.103:3000/adduser")
+        Ion.with(this).load("http://192.168.0.105:3000/adduser")
                 .setJsonObjectBody(json)
                 .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
             @Override
