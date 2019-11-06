@@ -16,14 +16,14 @@ export default function DashBoard(props) {
   const [viewport, setViewPort] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
-    latitude: -22.415865,
-    longitude: -45.4676787,
+    latitude: 0,
+    longitude: 0,
     zoom: 16
   });
   let intervalRef = useRef([]);
 
   useEffect(() => {
-    dispatch(getLastCoordinate(user.login));
+    dispatch(getLastCoordinate(user.login, setViewPort));
     // interval to get the last coordinate by each 2 seconds
     let id = setInterval(() => {
       dispatch(getLastCoordinate(user.login));
@@ -67,7 +67,7 @@ export default function DashBoard(props) {
         <Marker
           latitude={coordinates.lastCoordinate[1]}
           longitude={coordinates.lastCoordinate[0]}
-          offsetLeft={-20}
+          offsetLeft={-15}
           offsetTop={-10}
         >
           <img

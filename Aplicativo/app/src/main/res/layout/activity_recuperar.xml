@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6E6E6"
+    android:orientation="vertical"
+    android:paddingLeft="30dp"
+    android:paddingTop="80dp"
+    android:paddingRight="30dp"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/imgrec"
+        android:layout_width="match_parent"
+        android:layout_height="162dp"
+        app:srcCompat="@drawable/reset" />
+
+    <EditText
+        android:id="@+id/campoLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Digite seu login"
+        android:inputType="textPersonName" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_recuperar2"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="#3F71C4"
+        android:text="Recuperar minha senha"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+
+</LinearLayout>

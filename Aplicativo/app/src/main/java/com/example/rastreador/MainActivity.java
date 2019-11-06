@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
@@ -17,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText login, password;
     private Button btn_login;
     private Button link_regist;
+    private Button btn_esqueci;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +27,20 @@ public class MainActivity extends AppCompatActivity {
         password = findViewById(R.id.etSenha2);
         btn_login = findViewById(R.id.btn_logar);
         link_regist = findViewById(R.id.btn_registrar);
+        btn_esqueci = findViewById(R.id.btn_recuperar);
 
         link_regist.setOnClickListener(new View.OnClickListener() { //Vai para a Activity de Cadastro
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        btn_esqueci.setOnClickListener(new View.OnClickListener() { //Vai para a Activity de Cadastro
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), RecuperarActivity.class);
                 startActivity(intent);
             }
         });
@@ -58,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         json.addProperty("login", login);
         json.addProperty("password", senha);
 
-        Ion.with(this).load("http://192.168.0.103:3000/autenticate")
+        Ion.with(this).load("http://192.168.0.105:3000/autenticate")
                 .setJsonObjectBody(json)
                 .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
             @Override

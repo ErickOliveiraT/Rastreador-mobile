@@ -15,7 +15,7 @@ export const Types = {
 // Reducer
 const initialState = {
   name: "",
-  login: "",
+  login: localStorage.getItem("login"),
   password: "",
   confirmPassword: "",
   loading: false,
@@ -98,6 +98,7 @@ export function login(user, history, setShowAlertMessage) {
         if (res.data.valid === true) {
           console.log("Login valido");
           localStorage.setItem("loginValid", "true");
+          localStorage.setItem("login", user.login);
           history.push("/dashboard");
         } else {
           console.log("Login invalido");
@@ -187,6 +188,7 @@ export function logout(history) {
       type: Types.LOGOUT
     });
     localStorage.setItem("loginValid", "false");
+    localStorage.removeItem("login");
     history.push("/");
   };
 }

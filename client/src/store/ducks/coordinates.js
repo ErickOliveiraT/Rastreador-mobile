@@ -23,7 +23,7 @@ export function coordinatesReducer(state = initialState, action) {
         ...state,
         lastCoordinate: [0, 0],
         points: [],
-        loading: false
+        loading: true
       };
     case Types.GET_COORDINATES_SUCCESS:
       return {
@@ -79,7 +79,7 @@ export function getCoordinates(day, month, year, login) {
 }
 
 // get the last coordinate of the user and delete the route points
-export function getLastCoordinate(login) {
+export function getLastCoordinate(login, setViewPort = false) {
   return function(dispatch) {
     axios
       .get(`http://localhost:4000/ultimacoordenada/${login}`)
@@ -89,6 +89,13 @@ export function getLastCoordinate(login) {
           Number.parseFloat(res.data[0].latitude)
         ];
         dispatch(getLastCoordinatesSuccess(lastCoordinate));
+        if (setViewPort) {
+          setViewPort(prevState => ({
+            ...prevState,
+            latitude: lastCoordinate[1],
+            longitude: lastCoordinate[0]
+          }));
+        }
       })
       .catch(error => {
         // dispatch(getLastCoordinatesFailed());

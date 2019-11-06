@@ -106,7 +106,7 @@ export default function Menu({
             handleInit();
           }}
         >
-          Posição Atual
+          Última posição
         </Button>
       </div>{" "}
       {/* LOGOUT BUTTON */}

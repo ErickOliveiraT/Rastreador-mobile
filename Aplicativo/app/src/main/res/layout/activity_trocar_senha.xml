@@ -12,58 +12,34 @@
     tools:context=".RegisterActivity">
 
     <ImageView
-        android:id="@+id/logo"
+        android:id="@+id/imgtrocar"
         android:layout_width="match_parent"
         android:layout_height="104dp"
-        app:srcCompat="@drawable/add" />
+        app:srcCompat="@drawable/change" />
 
     <EditText
-        android:id="@+id/etNome"
+        android:id="@+id/novaSenha"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Nome"
-        android:inputType="textPersonName" />
-
-    <EditText
-        android:id="@+id/etEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Email"
-        android:inputType="textPersonName" />
-
-    <EditText
-        android:id="@+id/etLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Login"
-        android:inputType="textPersonName" />
-
-    <EditText
-        android:id="@+id/etSenha"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Senha"
+        android:hint="Nova Senha"
         android:inputType="textPassword" />
 
     <EditText
-        android:id="@+id/etSenha2"
+        android:id="@+id/novaSenha2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Confirme a senha"
+        android:hint="Confirme a nova Senha"
         android:inputType="textPassword" />
 
     <Button
-        android:id="@+id/btn_regist"
+        android:id="@+id/btn_mudar"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_marginTop="30dp"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="Cadastrar"
+        android:backgroundTint="#283F9B"
+        android:text="Confirmar"
         android:textColor="@android:color/white" />
 
 </LinearLayout>

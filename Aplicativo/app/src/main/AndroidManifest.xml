@@ -13,6 +13,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".AutorizarActivity"></activity>
+        <activity android:name=".TrocarSenhaActivity" />
+        <activity android:name=".TokenActivity" />
+        <activity android:name=".RecuperarActivity" />
+        <activity android:name=".Recuperar2Acitivity" />
         <activity android:name=".RastreioActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MainActivity">
