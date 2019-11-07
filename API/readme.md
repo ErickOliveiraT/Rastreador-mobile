@@ -1,6 +1,6 @@
 # API Node.js para o Rastreador
 
-Essa API forcece todas as operações úteis para as entidades 'Coordenada' e 'Usuário' por meio dos métodos GET e POST, transportando dados no formato JSON.
+Essa API forcece todas as operações úteis para as entidades 'Coordenada','Usuário' e 'Autorizado' por meio dos métodos GET e POST, transportando dados no formato JSON.
 
 ## Funcionalidades
 #
