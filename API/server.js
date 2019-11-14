@@ -15,7 +15,7 @@ function execSQLQuery(sqlQry, res) {
     const connection = mysql.createConnection({
         host: '35.199.122.94',
         port: 3306,
-        user: 'root',
+        user: 'admin',
         password: '',
         database: 'rastreador'
     });
@@ -74,7 +74,7 @@ router.post('/autenticate', (req,res) => { //Autentica um usuário
     const connection = mysql.createConnection({
         host: '35.199.122.94',
         port: 3306,
-        user: 'root',
+        user: 'admin',
         password: '',
         database: 'rastreador'
     });
@@ -120,7 +120,7 @@ router.post('/solicitarectoken', (req, res) => { //Solicita um token para recupe
     const connection = mysql.createConnection({
         host: '35.199.122.94',
         port: 3306,
-        user: 'root',
+        user: 'admin',
         password: '',
         database: 'rastreador'
     });
@@ -158,7 +158,7 @@ router.post('/validarectoken', (req, res) => { //Valida um token para recuperaç
     const connection = mysql.createConnection({
         host: '35.199.122.94',
         port: 3306,
-        user: 'root',
+        user: 'admin',
         password: '',
         database: 'rastreador'
     });
