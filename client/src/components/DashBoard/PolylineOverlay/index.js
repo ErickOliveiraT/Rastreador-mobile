@@ -5,11 +5,13 @@ export default class PolylineOverlay extends PureComponent {
   _redraw({ width, height, ctx, isDragging, project, unproject }) {
     const {
       points,
-      lineColor = "red",
-      circleColor = "blue",
+      mousePosition,
+      lineColor = "grey",
+      circleColor = "black",
       lineWidth = 8,
       renderWhileDragging = true
     } = this.props;
+    console.log(mousePosition);
     ctx.clearRect(0, 0, width, height);
     // serve para definir como será a sobreposição das cores dos shapes
     // ctx.globalCompositeOperation = "lighter";
@@ -23,13 +25,18 @@ export default class PolylineOverlay extends PureComponent {
         const pixel = project([point[0], point[1]]);
         ctx.lineTo(pixel[0], pixel[1]);
       });
+
       ctx.stroke();
+
       // Draw Circles
       ctx.fillStyle = circleColor;
       points.forEach(point => {
         const pixel = project([point[0], point[1]]);
         ctx.beginPath();
         ctx.arc(pixel[0], pixel[1], 8, 0, 2 * Math.PI);
+        ctx.fillStyle = ctx.isPointInPath(mousePosition.x, mousePosition.y)
+          ? "red"
+          : "blue";
         ctx.fill();
       });
     }

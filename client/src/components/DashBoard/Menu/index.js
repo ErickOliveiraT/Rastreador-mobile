@@ -55,7 +55,7 @@ export default function Menu({
     { name: "Novembro", month: 11, days: range(1, 30) },
     { name: "Dezembro", month: 12, days: range(1, 31) }
   ];
-  const [currentMonth, setCurrentMonth] = React.useState(months[9]);
+  const [currentMonth, setCurrentMonth] = React.useState(months[10]);
 
   const handleChange = e => {
     setCurrentMonth(months.find(month => month.month === e.target.value));
@@ -98,9 +98,9 @@ export default function Menu({
           {day}
         </Button>
       ))}
-      <div style={{ position: "relative", top: "30%" }}>
+      <div style={{ position: "relative", top: "15%" }}>
         <Button
-          color="secondary"
+          color="primary"
           style={{ textAlign: "left", display: "block", width: "100%" }}
           onClick={() => {
             handleInit();
@@ -110,7 +110,7 @@ export default function Menu({
         </Button>
       </div>{" "}
       {/* LOGOUT BUTTON */}
-      <div style={{ position: "relative", top: "50%" }}>
+      <div style={{ position: "relative", top: "18%" }}>
         <Button
           color="secondary"
           style={{ textAlign: "left", display: "block", width: "100%" }}

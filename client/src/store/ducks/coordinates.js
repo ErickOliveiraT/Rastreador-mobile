@@ -48,8 +48,10 @@ export function coordinatesReducer(state = initialState, action) {
 // get all records of coordinates in the date day/month/year,
 // and fill the lastcoordinate with the last coordinate of this date
 export function getCoordinates(day, month, year, login) {
+  if (day < 10) day = "0" + day.toString();
   return function(dispatch) {
     // in getCoordinatesStarted erase the state
+    console.log(day, month, year);
     dispatch(getCoordinatesStarted());
     axios
       .get(`http://localhost:4000/coordenadas/${day}/${month}/${year}/${login}`)
@@ -60,8 +62,8 @@ export function getCoordinates(day, month, year, login) {
         if (resCoordinates.length > 0) {
           for (let i = 0; i < resCoordinates.length; i++) {
             newPoints.push([
-              Number.parseFloat(resCoordinates[i].longitude),
-              Number.parseFloat(resCoordinates[i].latitude)
+              Number.parseFloat(resCoordinates[i].latitude),
+              Number.parseFloat(resCoordinates[i].longitude)
             ]);
           }
           // last position becomes the last position of the date
@@ -85,8 +87,8 @@ export function getLastCoordinate(login, setViewPort = false) {
       .get(`http://localhost:4000/ultimacoordenada/${login}`)
       .then(res => {
         const lastCoordinate = [
-          Number.parseFloat(res.data[0].longitude),
-          Number.parseFloat(res.data[0].latitude)
+          Number.parseFloat(res.data[0].latitude),
+          Number.parseFloat(res.data[0].longitude)
         ];
         dispatch(getLastCoordinatesSuccess(lastCoordinate));
         if (setViewPort) {
