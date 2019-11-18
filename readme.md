@@ -1,0 +1,3 @@
+O Rastreador Mobile é um sistema para rastreamento e compartilhamento de localização que contempla uma aplicação Android, responsável por coletar e registrar a posição geográfica do usuário ao decorrer do tempo e uma aplicação Web, onde o usuário acessa o resultado do rastreamento e/ou compartilhamento que registrou ou que foi autorizado por outro usuário a visualizar.
+
+Além das duas aplicações citadas, o sistema ainda conta com um servidor que é responsável por receber e atender requisições das plataformas Web e Android, bem como manter o banco de dados.
