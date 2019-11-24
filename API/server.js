@@ -2,9 +2,10 @@ const express = require('express')
 const mysql = require('mysql')
 const md5 = require('md5')
 const spawn = require('child_process').spawn
+const cred = require('./credencials')
 
 const app = express();         
-const port = 3000;
+const port = 4000;
 
 const router = express.Router();
 app.use(express.json())
@@ -13,11 +14,11 @@ app.use('/', router);
 //Operações do Banco de Dados:
 function execSQLQuery(sqlQry, res) {
     const connection = mysql.createConnection({
-        host: '',
-        port: 3306,
-        user: '',
-        password: '',
-        database: ''
+        host: cred.host,
+        port: cred.port,
+        user: cred.user,
+        password: cred.password,
+        database: cred.database
     });
    
     connection.query(sqlQry, function(error, results, fields){
@@ -72,11 +73,11 @@ router.post('/autenticate', (req,res) => { //Autentica um usuário
     const sqlQry = `SELECT password,name FROM users WHERE login = '${login}'`
 
     const connection = mysql.createConnection({
-        host: '',
-        port: 3306,
-        user: '',
-        password: '',
-        database: ''
+        host: cred.host,
+        port: cred.port,
+        user: cred.user,
+        password: cred.password,
+        database: cred.database
     });
    
     connection.query(sqlQry, function(error, results, fields) {
@@ -118,11 +119,11 @@ router.post('/solicitarectoken', (req, res) => { //Solicita um token para recupe
     const sqlQry = `SELECT email from users where login = '${login}'`
 
     const connection = mysql.createConnection({
-        host: '',
-        port: 3306,
-        user: '',
-        password: '',
-        database: ''
+        host: cred.host,
+        port: cred.port,
+        user: cred.user,
+        password: cred.password,
+        database: cred.database
     });
    
     connection.query(sqlQry, function(error, results, fields) {
@@ -156,11 +157,11 @@ router.post('/validarectoken', (req, res) => { //Valida um token para recuperaç
     const sqlQry = `SELECT recToken from users where login = '${login}'`
 
     const connection = mysql.createConnection({
-        host: '',
-        port: 3306,
-        user: '',
-        password: '',
-        database: ''
+        host: cred.host,
+        port: cred.port,
+        user: cred.user,
+        password: cred.password,
+        database: cred.database
     });
    
     connection.query(sqlQry, function(error, results, fields) {
