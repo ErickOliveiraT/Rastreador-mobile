@@ -47,11 +47,18 @@ export function coordinatesReducer(state = initialState, action) {
 // Action Creators
 // get all records of coordinates in the date day/month/year,
 // and fill the lastcoordinate with the last coordinate of this date
-export function getCoordinates(day, month, year, login) {
+export function getCoordinates(
+  day,
+  month,
+  year,
+  login,
+  handleAlertOpen = null,
+  setAlertMessage = null,
+  setViewPort = false
+) {
   if (day < 10) day = "0" + day.toString();
   return function(dispatch) {
     // in getCoordinatesStarted erase the state
-    console.log(day, month, year);
     dispatch(getCoordinatesStarted());
     axios
       .get(`http://localhost:4000/coordenadas/${day}/${month}/${year}/${login}`)
@@ -61,15 +68,33 @@ export function getCoordinates(day, month, year, login) {
         const lastCoordinate = [];
         if (resCoordinates.length > 0) {
           for (let i = 0; i < resCoordinates.length; i++) {
-            newPoints.push([
-              Number.parseFloat(resCoordinates[i].latitude),
-              Number.parseFloat(resCoordinates[i].longitude)
-            ]);
+            newPoints.push({
+              hour: resCoordinates[i].hour,
+              coordinates: [
+                Number.parseFloat(resCoordinates[i].longitude),
+                Number.parseFloat(resCoordinates[i].latitude)
+              ]
+            });
           }
           // last position becomes the last position of the date
-          lastCoordinate.push(newPoints[newPoints.length - 1]);
+          console.log(newPoints);
+          lastCoordinate.push(newPoints[newPoints.length - 1].coordinates);
+          console.log(newPoints.length);
           dispatch(getCoordinatesSuccess(newPoints, lastCoordinate[0]));
+          if (setViewPort) {
+            setViewPort(prevState => ({
+              ...prevState,
+              latitude: lastCoordinate[0][1],
+              longitude: lastCoordinate[0][0]
+            }));
+          }
+        } else {
+          handleAlertOpen();
+          setAlertMessage(
+            `Nenhuma atividade registrada ${day}/${month}/${year}.`
+          );
         }
+
         // else {
         //   dispatch(getCoordinatesFailed());
         // }
@@ -87,8 +112,8 @@ export function getLastCoordinate(login, setViewPort = false) {
       .get(`http://localhost:4000/ultimacoordenada/${login}`)
       .then(res => {
         const lastCoordinate = [
-          Number.parseFloat(res.data[0].latitude),
-          Number.parseFloat(res.data[0].longitude)
+          Number.parseFloat(res.data[0].longitude),
+          Number.parseFloat(res.data[0].latitude)
         ];
         dispatch(getLastCoordinatesSuccess(lastCoordinate));
         if (setViewPort) {

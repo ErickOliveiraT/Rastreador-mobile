@@ -7,6 +7,12 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
+import RoomIcon from "@material-ui/icons/Room";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import Avatar from "@material-ui/core/Avatar";
+import Grid from "@material-ui/core/Grid";
+import ButtonBase from "@material-ui/core/ButtonBase";
 
 const useStyles = makeStyles(theme => ({
   list: {
@@ -23,7 +29,10 @@ export default function Menu({
   handleLogout,
   getCoordinates,
   handleCancel,
-  handleInit
+  handleInit,
+  handleAlertOpen,
+  setAlertMessage,
+  setViewPort
 }) {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -68,6 +77,24 @@ export default function Menu({
       onClick={toggleDrawer(side, true)}
       onKeyDown={toggleDrawer(side, true)}
     >
+      <Grid container>
+        <Grid item xs={3}>
+          <Avatar style={{ margin: 10, backgroundColor: "blue" }}>
+            {user.name.charAt(0)}
+          </Avatar>
+        </Grid>
+        <Grid item xs={7}>
+          <h2 style={{ fontSize: 20, fontWeight: "normal" }}>{user.name}</h2>
+        </Grid>
+        <Grid item xs={2}>
+          {/* <ButtonBase
+            onClick={toggleDrawer(side, true)}
+            style={{ marginLeft: 10, marginTop: 10 }}
+          >
+            <ArrowBackIosIcon />
+          </ButtonBase> */}
+        </Grid>
+      </Grid>
       <FormControl className={classes.formControl}>
         <InputLabel htmlFor="month-helper">Escolha o mês</InputLabel>
         <Select
@@ -92,7 +119,17 @@ export default function Menu({
           key={day}
           onClick={() => {
             handleCancel();
-            dispatch(getCoordinates(day, currentMonth.month, 2019, user.login));
+            dispatch(
+              getCoordinates(
+                day,
+                currentMonth.month,
+                2019,
+                user.login,
+                handleAlertOpen,
+                setAlertMessage,
+                setViewPort
+              )
+            );
           }}
         >
           {day}
@@ -106,6 +143,7 @@ export default function Menu({
             handleInit();
           }}
         >
+          <RoomIcon style={{ verticalAlign: "middle", paddingRight: 5 }} />
           Última posição
         </Button>
       </div>{" "}
@@ -116,6 +154,7 @@ export default function Menu({
           style={{ textAlign: "left", display: "block", width: "100%" }}
           onClick={handleLogout}
         >
+          <ExitToAppIcon style={{ verticalAlign: "middle", paddingRight: 5 }} />
           Logout
         </Button>
       </div>
@@ -125,8 +164,8 @@ export default function Menu({
   return (
     <div>
       <Button
-        variant="outlined"
-        color="default"
+        variant="contained"
+        color="primary"
         style={{ position: "absolute", top: 5, left: 5 }}
         onClick={toggleDrawer("left", true)}
       >

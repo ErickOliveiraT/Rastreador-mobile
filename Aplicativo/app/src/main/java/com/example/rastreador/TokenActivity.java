@@ -52,7 +52,7 @@ public class TokenActivity extends AppCompatActivity {
         json.addProperty("login", login);
         json.addProperty("token", token);
 
-        Ion.with(this).load("http://192.168.0.105:3000/validarectoken")
+        Ion.with(this).load("http://200.235.90.248:4000/validarectoken")
                 .setJsonObjectBody(json)
                 .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
             @Override

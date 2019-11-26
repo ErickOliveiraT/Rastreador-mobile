@@ -9,20 +9,21 @@ export default class PolylineOverlay extends PureComponent {
       lineColor = "grey",
       circleColor = "black",
       lineWidth = 8,
-      renderWhileDragging = true
+      renderWhileDragging = true,
+      setAlertMessage,
+      handleAlertOpen
     } = this.props;
-    console.log(mousePosition);
     ctx.clearRect(0, 0, width, height);
-    // serve para definir como será a sobreposição das cores dos shapes
-    // ctx.globalCompositeOperation = "lighter";
-
+    // if don't have points to show, set message "Não houve atividade este dia."
     if ((renderWhileDragging || !isDragging) && points) {
+      // serve para definir como será a sobreposição das cores dos shapes
+      // ctx.globalCompositeOperation = "lighter";
       ctx.lineWidth = lineWidth;
       ctx.strokeStyle = lineColor;
       // Draw lines
       ctx.beginPath();
       points.forEach(point => {
-        const pixel = project([point[0], point[1]]);
+        const pixel = project([point.coordinates[0], point.coordinates[1]]);
         ctx.lineTo(pixel[0], pixel[1]);
       });
 
@@ -31,12 +32,17 @@ export default class PolylineOverlay extends PureComponent {
       // Draw Circles
       ctx.fillStyle = circleColor;
       points.forEach(point => {
-        const pixel = project([point[0], point[1]]);
+        const pixel = project([point.coordinates[0], point.coordinates[1]]);
         ctx.beginPath();
         ctx.arc(pixel[0], pixel[1], 8, 0, 2 * Math.PI);
-        ctx.fillStyle = ctx.isPointInPath(mousePosition.x, mousePosition.y)
-          ? "red"
-          : "blue";
+        if (ctx.isPointInPath(mousePosition.x, mousePosition.y)) {
+          ctx.fillStyle = "red";
+          const d = new Date(point.hour);
+          setAlertMessage(d.toLocaleString("pt-BR"));
+          handleAlertOpen();
+        } else {
+          ctx.fillStyle = "blue";
+        }
         ctx.fill();
       });
     }

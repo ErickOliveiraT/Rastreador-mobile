@@ -10,6 +10,8 @@ import {
   getCoordinates
 } from "../../store/ducks/coordinates";
 
+import Snackbar from "@material-ui/core/Snackbar";
+
 export default function DashBoard(props) {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
@@ -23,6 +25,16 @@ export default function DashBoard(props) {
     zoom: 16
   });
   let intervalRef = useRef([]);
+
+  const [showAlert, setShowAlertMessage] = React.useState(false);
+  const [alertMessage, setAlertMessage] = React.useState("");
+  const handleAlertOpen = () => {
+    setShowAlertMessage(true);
+  };
+
+  const handleAlertClose = () => {
+    setShowAlertMessage(false);
+  };
 
   useEffect(() => {
     dispatch(getLastCoordinate(user.login, setViewPort));
@@ -48,7 +60,7 @@ export default function DashBoard(props) {
       clearInterval(intervalRef.current[i]);
   };
   const handleInit = () => {
-    dispatch(getLastCoordinate(user.login));
+    dispatch(getLastCoordinate(user.login, setViewPort));
     let id = setInterval(() => {
       dispatch(getLastCoordinate(user.login));
     }, 2000);
@@ -56,7 +68,6 @@ export default function DashBoard(props) {
   };
 
   const handleMouseMove = e => {
-    console.log(e.nativeEvent.offsetX);
     setMousePosition({ x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY });
   };
 
@@ -73,6 +84,8 @@ export default function DashBoard(props) {
         <PolylineOverlay
           mousePosition={mousePosition}
           points={coordinates.points}
+          handleAlertOpen={handleAlertOpen}
+          setAlertMessage={setAlertMessage}
         />
         <Marker
           latitude={coordinates.lastCoordinate[1]}
@@ -80,7 +93,9 @@ export default function DashBoard(props) {
           offsetLeft={-15}
           offsetTop={-10}
         >
-          <Avatar style={{ margin: 10 }}>{user.name.charAt(0)}</Avatar>
+          <Avatar style={{ backgroundColor: "blue" }}>
+            {user.name.charAt(0)}
+          </Avatar>
         </Marker>
       </ReactMapGL>
       <Menu
@@ -88,6 +103,19 @@ export default function DashBoard(props) {
         handleLogout={handleLogout}
         handleCancel={handleCancel}
         handleInit={handleInit}
+        handleAlertOpen={handleAlertOpen}
+        setAlertMessage={setAlertMessage}
+        setViewPort={setViewPort}
+      />
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        key={`top,center`}
+        open={showAlert}
+        onClose={handleAlertClose}
+        ContentProps={{
+          "aria-describedby": "message-id"
+        }}
+        message={<span id="message-id">{alertMessage}</span>}
       />
     </div>
   );

@@ -18,7 +18,7 @@ function execSQLQuery(sqlQry, res) {
     host: "35.199.122.94",
     port: 3306,
     user: "admin",
-    password: "ZFr06VeKruiMUB1L",
+    password: "",
     database: "rastreador"
   });
 
@@ -89,7 +89,7 @@ router.post("/autenticate", (req, res) => {
     host: "35.199.122.94",
     port: 3306,
     user: "admin",
-    password: "ZFr06VeKruiMUB1L",
+    password: "",
     database: "rastreador"
   });
 
@@ -164,7 +164,7 @@ router.post("/solicitarectoken", (req, res) => {
     host: "35.199.122.94",
     port: 3306,
     user: "admin",
-    password: "ZFr06VeKruiMUB1L",
+    password: "",
     database: "rastreador"
   });
 
@@ -210,7 +210,7 @@ router.post("/validarectoken", (req, res) => {
     host: "35.199.122.94",
     port: 3306,
     user: "admin",
-    password: "ZFr06VeKruiMUB1L",
+    password: "",
     database: "rastreador"
   });
 

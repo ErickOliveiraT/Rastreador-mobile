@@ -14,7 +14,7 @@ export const Types = {
 
 // Reducer
 const initialState = {
-  name: "",
+  name: localStorage.getItem("name"),
   login: localStorage.getItem("login"),
   password: "",
   confirmPassword: "",
@@ -33,7 +33,8 @@ export function userReducer(state = initialState, action) {
       return {
         ...state,
         loading: false,
-        login: action.payload.login
+        login: action.payload.login,
+        name: action.payload.name
       };
     case Types.LOGIN_FAILED:
       return {
@@ -93,12 +94,14 @@ export function login(user, history, setShowAlertMessage) {
         password: user.password
       })
       .then(res => {
-        dispatch(loginSuccess(user.login));
+        dispatch(loginSuccess(user.login, res.data.name));
+        console.log(res.data);
         console.log("Valid: " + res.data.valid);
         if (res.data.valid === true) {
           console.log("Login valido");
           localStorage.setItem("loginValid", "true");
           localStorage.setItem("login", user.login);
+          localStorage.setItem("name", res.data.name);
           history.push("/dashboard");
         } else {
           console.log("Login invalido");
@@ -108,6 +111,7 @@ export function login(user, history, setShowAlertMessage) {
       })
       .catch(error => {
         console.log("Login invalido");
+        console.log(error);
         dispatch(
           loginFailed(
             "Ocorreu um erro, tente novamente mais tarde. erro: " + error
@@ -122,10 +126,11 @@ const loginStarted = () => ({
   type: Types.LOGIN_STARTED
 });
 
-const loginSuccess = login => ({
+const loginSuccess = (login, name) => ({
   type: Types.LOGIN_SUCCESS,
   payload: {
-    login
+    login,
+    name
   }
 });
 
@@ -189,6 +194,7 @@ export function logout(history) {
     });
     localStorage.setItem("loginValid", "false");
     localStorage.removeItem("login");
+    localStorage.removeItem("name");
     history.push("/");
   };
 }
