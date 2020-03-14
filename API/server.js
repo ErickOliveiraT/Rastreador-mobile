@@ -3,6 +3,7 @@ const mysql = require('mysql')
 const md5 = require('md5')
 const spawn = require('child_process').spawn
 const cred = require('./credencials')
+const token = require('./token')
 
 const app = express();         
 const port = 4000;
@@ -89,7 +90,8 @@ router.post('/autenticate', (req,res) => { //Autentica um usuário
           }
           else { //Usuário existe
             if (results[0].password === password_hash) { //Senha certa
-              res.json({"valid":true,"name":results[0].name})
+                let tk = token.getNewToken(login)
+                res.json({"valid":true,"name":results[0].name,"token":tk})
             } else { //Senha errada
                 res.json({"valid":false,"error":"Senha incorreta"})
             }
@@ -108,7 +110,7 @@ router.get('/coordenadas/:dia?/:mes?/:ano?/:login?', (req, res) => { //Consulta 
     }
 })
 
-router.post('/addrectoken', (req, res) => { //Salva o token gerado no banco de dados
+router.post('/addrectoken', (req, res) => { //Salva o recToken gerado no banco de dados
     const login = req.body.login
     const token = req.body.token
     execSQLQuery(`UPDATE users SET recToken = '${token}' where login = '${login}'`, res)
@@ -191,3 +193,4 @@ router.post('/autorizar', (req, res) => { //Autoriza um usuário ver as localiza
 });
 
 app.listen(port)
+console.log("Listening on port " + port)

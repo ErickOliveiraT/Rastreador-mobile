@@ -19,7 +19,7 @@ res = requests.post('http://localhost:3000/addrectoken', json={"login": login,"t
 target = sys.argv[2]
 EMAIL_DEST = target
 EMAIL_ADDRESS = 'projetorastreadorcom241@gmail.com'
-PASSWORD = 
+PASSWORD = 'rastreador-admin'
 subject = 'Recupere sua senha'
 msg = 'Use o codigo ' + code + ' para criar uma nova senha do Rastreador Mobile'
 

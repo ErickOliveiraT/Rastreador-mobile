@@ -66,7 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
         json.addProperty("password", senha);
         json.addProperty("email", email);
 
-        Ion.with(this).load("http://192.168.0.105:3000/adduser")
+        Ion.with(this).load("http://192.168.0.103:4000/adduser")
                 .setJsonObjectBody(json)
                 .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
             @Override
