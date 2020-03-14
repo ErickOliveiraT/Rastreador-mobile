@@ -33,5 +33,26 @@ module.exports = {
         }
         this.storeNewToken(user, token);
         return token;
-    }
+    },
+
+    // Get the real token of an user
+    checkToken(user, token) {
+        return new Promise((resolve, reject) => {
+            var con = mysql.createConnection({
+                host: cred.host,
+                user: cred.user,
+                password: cred.password,
+                database: cred.database
+            });
+            
+            con.connect(function(err) {
+                if (err) throw err;
+                let qry = `SELECT token FROM users WHERE login = '${user}'`
+                con.query(qry, function (err, result, fields) {
+                  if (err) throw err;
+                  resolve(result[0].token == token);
+                });
+            });
+        });
+    },
 }

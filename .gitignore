@@ -1,2 +1,3 @@
 node_modules
 *.lock
+API/credencials.js

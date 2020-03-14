@@ -194,3 +194,7 @@ router.post('/autorizar', (req, res) => { //Autoriza um usuário ver as localiza
 
 app.listen(port)
 console.log("Listening on port " + port)
+
+/* token.checkToken('bargrall','avgPRAY9v7G8k005REPde1LZKHBi9l9q').then((result) => {
+    console.log(result);
+}); */
