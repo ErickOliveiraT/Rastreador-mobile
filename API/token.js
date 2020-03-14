@@ -13,11 +13,9 @@ module.exports = {
         
         con.connect(function(err) {
             if (err) throw err;
-            //console.log("Connected!");
             var sql = `UPDATE users SET token = '${token}' where login = '${user}'`;
             con.query(sql, function (err, result) {
                 if (err) throw err;
-                //console.log("1 record inserted");
             });
         });
     },
@@ -35,7 +33,7 @@ module.exports = {
         return token;
     },
 
-    // Get the real token of an user
+    // Check if a token is valid
     checkToken(user, token) {
         return new Promise((resolve, reject) => {
             var con = mysql.createConnection({
