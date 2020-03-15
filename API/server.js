@@ -4,6 +4,7 @@ const md5 = require('md5')
 const spawn = require('child_process').spawn
 const cred = require('./credencials')
 const token = require('./token')
+const esp = require('./esp8266')
 
 const app = express();         
 const port = 4000;
@@ -198,3 +199,13 @@ console.log("Listening on port " + port)
 /* token.checkToken('bargrall','avgPRAY9v7G8k005REPde1LZKHBi9l9q').then((result) => {
     console.log(result);
 }); */
+
+/* esp.getUserbySN(1).then((result) => {
+    console.log(result);
+}); */
+
+/* esp.updateUserbySN(1, 'teste').then((result) => {
+    console.log(result);
+}); */
+
+//esp.updateUserbySN(1,'teste');

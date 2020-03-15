@@ -24,3 +24,11 @@ CREATE TABLE `autorizados` (
 	CONSTRAINT `fk_masterUser` FOREIGN KEY (`master_id`) REFERENCES `users` (`id`),
 	CONSTRAINT `fk_slaveUser` FOREIGN KEY (`slave_id`) REFERENCES `users` (`id`)
 );
+
+CREATE TABLE `esp8266` (
+	`serial_number` INT(11) NOT NULL AUTO_INCREMENT,
+	`user` VARCHAR(50) NULL DEFAULT NULL,
+	PRIMARY KEY (`serial_number`),
+	INDEX `FK__users` (`user`),
+	CONSTRAINT `FK__users` FOREIGN KEY (`user`) REFERENCES `users` (`login`)
+);
