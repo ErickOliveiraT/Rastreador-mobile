@@ -1,4 +1,4 @@
-#include <ArduinoJson.h>
+﻿#include <ArduinoJson.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
 
@@ -7,8 +7,8 @@
 #define LED_POWER D3
 #define LED_POST LED_BUILTIN
 
-const char* ssid = "Bargrall";
-const char* password = "@#housejacare10";     
+const char* ssid = "";
+const char* password = "";     
  
 int wifiStatus;
 
