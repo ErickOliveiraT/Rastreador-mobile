@@ -11,8 +11,8 @@
 #define RX D7
 #define TX D8
 
-const char* ssid = "House";
-const char* password = "@#housejacare10";  
+const char* ssid = "";
+const char* password = "";  
 
 int wifiStatus;
 SoftwareSerial serial1(RX, TX);
