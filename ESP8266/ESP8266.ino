@@ -1,16 +1,22 @@
-﻿#include <ArduinoJson.h>
+#include <ArduinoJson.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WiFi.h>
+#include <SoftwareSerial.h>
+#include <TinyGPS.h>
 
 #define LED_WIFI D2
 #define LED_TRACKING D1
 #define LED_POWER D3
 #define LED_POST LED_BUILTIN
+#define RX D7
+#define TX D8
 
-const char* ssid = "";
-const char* password = "";     
- 
+const char* ssid = "House";
+const char* password = "@#housejacare10";  
+
 int wifiStatus;
+SoftwareSerial serial1(RX, TX);
+TinyGPS gps1;
 
 void setup() {
   pinMode(LED_POST, OUTPUT);
@@ -22,13 +28,14 @@ void setup() {
   digitalWrite(LED_POWER, HIGH);
   digitalWrite(LED_POST, HIGH);
   
+  serial1.begin(9600);
   Serial.begin(9600);
   delay(200);
- 
+
   //Connecting to Wifi 
   Serial.println();
   Serial.println();
-  Serial.print("A ligar à rede ");
+  Serial.print("Connecting to ");
   Serial.println(ssid);
  
   WiFi.begin(ssid, password);
@@ -36,45 +43,67 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
+  digitalWrite(LED_WIFI, HIGH);
+  Serial.println("\nWifi connected");
 }
- 
-void loop() {
-  wifiStatus = WiFi.status();
-  
-  if(wifiStatus == WL_CONNECTED){ //Connected
-    digitalWrite(LED_WIFI, HIGH);
-    Serial.println("");
-    Serial.println("Wifi ligado!");  
 
-    digitalWrite(LED_POST, LOW);
-    
-    DynamicJsonDocument doc(2048);
-    doc["login"] = "bargrall";
-    doc["latitude"] = "-22.41905901577895";
-    doc["longitude"] = "-45.45496811285084";
-    
-    // Serialize JSON document
-    String json;
-    serializeJson(doc, json);
-    //Serial.println(json);
-    
-    HTTPClient http;
-    
-    // Send request
-    http.begin("http://192.168.0.108:4000/addcoordenada");
-    http.addHeader("Content-Type", "application/json");
-    http.POST(json);
-    
-    //Serial.print(http.getString()); //Response message
-    
-    http.end();
-    digitalWrite(LED_POST, HIGH);
-  }  
-  else { //Disconnected
-    digitalWrite(LED_WIFI, LOW);
-    Serial.println("");
-    Serial.println("Sem conexão wifi");
+void loop() {
+  bool recebido = false;
+  digitalWrite(LED_TRACKING, LOW);
+
+  while (serial1.available()) {
+     char cIn = serial1.read();
+     recebido = gps1.encode(cIn);
   }
-  
-  delay(5000);
+
+  if (recebido) {
+     digitalWrite(LED_TRACKING, HIGH);
+ 
+     long latitude, longitude, test = 22.546789;
+     gps1.get_position(&latitude, &longitude);     
+
+     if (latitude != TinyGPS::GPS_INVALID_F_ANGLE) {
+        Serial.print("Latitude: ");
+        Serial.println(float(latitude) / 100000, 6);
+     }
+
+     if (longitude != TinyGPS::GPS_INVALID_F_ANGLE) {
+        Serial.print("Longitude: ");
+        Serial.println(float(longitude) / 100000, 6);
+        Serial.println();
+     }
+
+     if (WiFi.status() != WL_CONNECTED) {
+        digitalWrite(LED_WIFI, LOW);
+        Serial.println("No wifi");
+     } 
+     else {
+      digitalWrite(LED_POST, LOW);
+    
+      DynamicJsonDocument doc(2048);
+      doc["login"] = "bargrall";
+      doc["latitude"] = (float(latitude)/100000);
+      doc["longitude"] = (float(longitude)/100000);
+      
+      // Serialize JSON document
+      String json;
+      serializeJson(doc, json);
+      //Serial.println(json);
+      
+      HTTPClient http;
+      
+      // Send request
+      http.begin("http://192.168.0.108:4000/addcoordenada");
+      http.addHeader("Content-Type", "application/json");
+      http.POST(json);
+      
+      //Serial.print(http.getString()); //Response message
+      
+      http.end();
+      digitalWrite(LED_POST, HIGH);
+     }
+
+     digitalWrite(LED_TRACKING, LOW);
+     delay(5000);
+  }
 }
