@@ -5,6 +5,7 @@ const spawn = require('child_process').spawn
 const cred = require('./credencials')
 const token = require('./token')
 const esp = require('./esp8266')
+const geolocation = require('./geolocation')
 
 const app = express();         
 const port = 4000;
@@ -33,7 +34,7 @@ function execSQLQuery(sqlQry, res) {
 }
 
 //Definindo as rotas
-router.get('/', (req, res) => res.json({ message: 'Funcionando!' })); //Indica de a API está online
+router.get('/', (req, res) => res.sendStatus(200)); //Indica de a API está online
 
 router.get('/users', (req, res) => { //Consulta todos os usuários
     execSQLQuery('SELECT * FROM users', res);
@@ -61,11 +62,32 @@ router.post('/addcoordenada', (req, res) => { //Adiciona uma nova coordenada
     const login = req.body.login
     const latitude = req.body.latitude
     const longitude = req.body.longitude    
-    var today = new Date();
-    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    var dateTime = date+' '+time;
-    execSQLQuery(`INSERT INTO coordenadas(login,latitude,longitude,hour) VALUES('${login}','${latitude}','${longitude}','${dateTime}')`, res);
+    
+    geolocation.getAddress(latitude, longitude, login)
+    .then( 
+        (address) => {
+            var today = new Date();
+            var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            var dateTime = date+' '+time;
+
+            if (!address) var sql = `INSERT INTO coordenadas(login,latitude,longitude,hour) VALUES('${login}','${latitude}','${longitude}','${dateTime}')`;
+            else {
+                let road = address.road;
+                let country = address.country;
+                let neighbourhood = address.neighbourhood;
+                let city = address.city;
+                let state = address.state;
+                let suburb = address.suburb;
+                if (road == undefined) var sql = `INSERT INTO coordenadas(login,latitude,longitude,hour,neighbourhood,suburb,city,state,country) VALUES('${login}','${latitude}','${longitude}','${dateTime}','${neighbourhood}','${suburb}','${city}','${state}','${country}')`;
+                else var sql = `INSERT INTO coordenadas(login,latitude,longitude,hour,road,neighbourhood,suburb,city,state,country) VALUES('${login}','${latitude}','${longitude}','${dateTime}','${road}','${neighbourhood}','${suburb}','${city}','${state}','${country}')`;
+            }
+            
+            execSQLQuery(sql, res);
+        }
+    ).catch(
+        (error) => res.send(error)
+    );
 });
 
 router.post('/autenticate', (req,res) => { //Autentica um usuário
@@ -209,3 +231,5 @@ console.log("Listening on port " + port)
 }); */
 
 //esp.updateUserbySN(1,'teste');
+
+//geolocation.getAddress('-22.32858','-46.9281').then((address) => console.log(address));
