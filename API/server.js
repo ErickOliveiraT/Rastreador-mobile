@@ -71,7 +71,7 @@ router.post('/addcoordenada', (req, res) => { //Adiciona uma nova coordenada
             var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
             var dateTime = date+' '+time;
 
-            if (!address) var sql = `INSERT INTO coordenadas(login,latitude,longitude,hour) VALUES('${login}','${latitude}','${longitude}','${dateTime}')`;
+            if (!address || address == undefined) var sql = `INSERT INTO coordenadas(login,latitude,longitude,hour) VALUES('${login}','${latitude}','${longitude}','${dateTime}')`;
             else {
                 let road = address.road;
                 let country = address.country;
