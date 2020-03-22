@@ -2,6 +2,7 @@ const express = require('express')
 const md5 = require('md5')
 const geolocation = require('./geolocation')
 const users = require('./users')
+const token = require('./token')
 
 const app = express(); 
 const router = express.Router();
@@ -49,11 +50,14 @@ router.post('/autenticate', (req,res) => { //Autentica um usuário
     .catch((error) => {res.status(400).send(error)});
 });
 
-router.get('/coordenadas/:dia?/:mes?/:ano?/:login?', (req, res) => { //Consulta as coordenadas do dia
+router.get('/coordenadas/:dia?/:mes?/:ano?/:login?', async (req, res) => { //Consulta as coordenadas do dia
     if(req.params.ano && req.params.ano && req.params.dia && req.params.login) {
-        geolocation.getCoordinates(req.params.login, req.params.dia, req.params.mes, req.params.ano)
-        .then((response) => {res.send(response)})
-        .catch((error) => res.status(400).send(error));
+        const valid = await token.checkJWT(req.params.login,req.headers.token);
+        if(valid) {
+            geolocation.getCoordinates(req.params.login, req.params.dia, req.params.mes, req.params.ano)
+            .then((response) => {res.send(response)})
+            .catch((error) => res.status(400).send(error));
+        } else res.sendStatus(401);
     } else res.sendStatus(400);
 })
 

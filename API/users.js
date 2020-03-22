@@ -41,7 +41,8 @@ module.exports = {
                     if (result[0] == undefined || result[0] === undefined) resolve({valid:false,error:"Usuário não existe"});
                     else {
                         if (result[0].password === user.password_hash) { //Senha certa
-                            let tk = await token.getToken(user.login);
+                            //const tk = await token.getToken(user.login);
+                            const tk = token.getJWT(user.login);
                             resolve({valid:true,name:result[0].name,token:tk});
                         } else { //Senha errada
                             resolve({valid:false,error:"Senha incorreta"})

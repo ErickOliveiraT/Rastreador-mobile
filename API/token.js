@@ -78,5 +78,16 @@ module.exports = {
             owner = dec.login;
         });
         return owner;
+    },
+
+    //Check if a JWT belongs to an user
+    async checkJWT(user, token) {
+        try {
+            const owner = await this.getJWTOwner(token);
+            if (!owner || owner == null || owner == undefined || owner === undefined) return false;
+            return (owner==user);
+        } catch {
+            return false;
+        }
     }
 }
