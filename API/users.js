@@ -36,12 +36,12 @@ module.exports = {
             con.connect(function(err) {
                 if (err) resolve({valid:false,error:err});
                 var sql = `SELECT password,name FROM users WHERE login = '${user.login}'`
-                con.query(sql, function (err, result) {
+                con.query(sql, async function (err, result) {
                     if (err) resolve({valid:false,error:err});
                     if (result[0] == undefined || result[0] === undefined) resolve({valid:false,error:"Usuário não existe"});
                     else {
                         if (result[0].password === user.password_hash) { //Senha certa
-                            let tk = token.getNewToken(user.login);
+                            let tk = await token.getToken(user.login);
                             resolve({valid:true,name:result[0].name,token:tk});
                         } else { //Senha errada
                             resolve({valid:false,error:"Senha incorreta"})
