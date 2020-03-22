@@ -33,9 +33,9 @@ router.post('/addcoordenada', (req, res) => { //Adiciona uma nova coordenada
         (address) => {  
             geolocation.storeCoordinates(login,latitude,longitude,address)
             .then((response) => {res.sendStatus(200)})
-            .catch((error) => {res.sendStatus(400).send(error)});
+            .catch((error) => {res.status(400).send(error)});
         }
-    ).catch((error) => res.sendStatus(400).send(error));
+    ).catch((error) => res.status(400).send(error));
 });
 
 router.post('/autenticate', (req,res) => { //Autentica um usuário
@@ -46,14 +46,14 @@ router.post('/autenticate', (req,res) => { //Autentica um usuário
 
     users.autenticate(user)
     .then((response) => {res.send(JSON.stringify(response));})
-    .catch((error) => {res.sendStatus(400).send(error)});
+    .catch((error) => {res.status(400).send(error)});
 });
 
 router.get('/coordenadas/:dia?/:mes?/:ano?/:login?', (req, res) => { //Consulta as coordenadas do dia
     if(req.params.ano && req.params.ano && req.params.dia && req.params.login) {
         geolocation.getCoordinates(req.params.login, req.params.dia, req.params.mes, req.params.ano)
         .then((response) => {res.send(response)})
-        .catch((error) => res.sendStatus(400).send(error));
+        .catch((error) => res.status(400).send(error));
     } else res.sendStatus(400);
 })
 
