@@ -3,6 +3,7 @@ const md5 = require('md5')
 const geolocation = require('./geolocation')
 const users = require('./users')
 const token = require('./token')
+const mailing = require('./mailing')
 
 const app = express(); 
 const router = express.Router();
@@ -36,7 +37,7 @@ router.post('/addcoordenada', (req, res) => { //Adiciona uma nova coordenada
             .then((response) => {res.sendStatus(200)})
             .catch((error) => {res.status(400).send(error)});
         }
-    ).catch((error) => res.status(400).send(error));
+    ).catch((error) => {res.status(400).send(error)});
 });
 
 router.post('/autenticate', (req,res) => { //Autentica um usuário
@@ -56,10 +57,43 @@ router.get('/coordenadas/:dia?/:mes?/:ano?/:login?', async (req, res) => { //Con
         if(valid) {
             geolocation.getCoordinates(req.params.login, req.params.dia, req.params.mes, req.params.ano)
             .then((response) => {res.send(response)})
-            .catch((error) => res.status(400).send(error));
+            .catch((error) => {res.status(400).send(error)});
         } else res.sendStatus(401);
     } else res.sendStatus(400);
-})
+});
+
+router.get('/getrectoken/:login?', async (req, res) => { //Consulta as coordenadas do dia
+    if(req.params.login) {
+        token.getRecToken(req.params.login)
+        .then(async (response) => {
+            users.getEmail(req.params.login)
+            .then((email) => {
+                mailing.sendToken(response,email)
+                .then(res.sendStatus(200));
+            });
+        })
+        .catch((error) => {res.status(500).send('Erro Interno: ' + error)});
+    } else res.sendStatus(400);
+});
+
+router.post('/setpassword', async (req, res) => { //Muda a senha de um usuário
+    const recToken = req.body.recToken;
+    const login = req.body.login;
+    const password_hash = md5(req.body.password);
+    try {
+        const valid = await token.checkRecToken(login,recToken);
+        if (valid) {
+            users.changePassword(login,password_hash)
+            .then((response) => {
+                token.resetRecToken(login);
+                res.sendStatus(200);
+            })
+            .catch((error) => {res.status(500).send('Erro ao trocar senha')});
+        } else res.status(401).send('Token Inválido');
+    } catch (error) {
+        res.status(500).send('Erro ao checar token');
+    }
+});
 
 app.listen(process.env.PORT || 4000);
 console.log("Listening on port 4000...");

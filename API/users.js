@@ -51,5 +51,47 @@ module.exports = {
                 });
             });
         });
+    },
+
+    //Change password of an user
+    changePassword(login, password_hash) {
+        return new Promise((resolve, reject) => {
+            var con = mysql.createConnection({
+                host: cred.host,
+                user: cred.user,
+                password: cred.password,
+                database: cred.database
+            });
+            
+            con.connect(function(err) {
+                if (err) reject(err);
+                var sql = `UPDATE users SET password = '${password_hash}' WHERE login = '${login}'`;
+                con.query(sql, function (err, result) {
+                    if (err) reject(err);
+                    resolve(true);
+                });
+            });
+        });
+    },
+
+    //Get email of an user
+    getEmail(login) {
+        return new Promise((resolve, reject) => {
+            var con = mysql.createConnection({
+                host: cred.host,
+                user: cred.user,
+                password: cred.password,
+                database: cred.database
+            });
+            
+            con.connect(function(err) {
+                if (err) reject(err);
+                var sql = `SELECT email from users WHERE login = '${login}'`;
+                con.query(sql, function (err, result) {
+                    if (err) reject(err);
+                    resolve(result[0].email);
+                });
+            });
+        });
     }
 }
