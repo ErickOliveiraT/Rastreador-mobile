@@ -11,8 +11,8 @@
 #define RX D7
 #define TX D8
 
-const char* ssid = "";
-const char* password = "";  
+const char* ssid = "Tracker_ESP8266_SN01";
+const char* password = "";
 
 int wifiStatus;
 SoftwareSerial serial1(RX, TX);
@@ -59,7 +59,7 @@ void loop() {
   if (recebido) {
      digitalWrite(LED_TRACKING, HIGH);
  
-     long latitude, longitude, test = 22.546789;
+     long latitude, longitude;
      gps1.get_position(&latitude, &longitude);     
 
      if (latitude != TinyGPS::GPS_INVALID_F_ANGLE) {
@@ -93,7 +93,7 @@ void loop() {
       HTTPClient http;
       
       // Send request
-      http.begin("http://192.168.0.108:4000/addcoordenada");
+      http.begin("http://rastreador-mobile.herokuapp.com/addcoordenada");
       http.addHeader("Content-Type", "application/json");
       http.POST(json);
       
@@ -104,6 +104,6 @@ void loop() {
      }
 
      digitalWrite(LED_TRACKING, LOW);
-     delay(5000);
+     delay(10000);
   }
 }
