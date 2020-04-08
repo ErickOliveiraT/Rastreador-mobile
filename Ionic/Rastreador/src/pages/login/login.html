@@ -22,11 +22,11 @@
   <button id="login-button1" ion-button color="positive" block>
     Entrar
   </button>
-  <button id="login-button4" ion-button color="balanced" block>
+  <button id="login-button4" ion-button color="balanced" (click)="gotoSign()" block>
     Registrar-se
   </button>
   <div class="spacer" style="height:10;" id="login-spacer3"></div>
-  <div id="login-markdown3" style="text-align:center;" class="show-list-numbers-and-dots">
+  <div id="login-markdown3" style="text-align:center;" class="show-list-numbers-and-dots" (click)="gotoForgot()">
     <p style="color:#050074;">
       Esqueci minha senha
     </p>
