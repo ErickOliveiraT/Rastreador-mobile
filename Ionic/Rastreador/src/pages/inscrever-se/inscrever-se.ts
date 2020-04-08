@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
-import axios, { AxiosRequestConfig, AxiosPromise } from 'axios';
-import { a } from '@angular/core/src/render3';
+import { NavController, Platform, AlertController } from 'ionic-angular';
+import axios from 'axios';
 
 @Component({
   selector: 'page-inscrever-se',
@@ -13,20 +12,23 @@ export class InscreverSePage {
   name:string;
   password:string;
   email:string;
+  API_URL = '/adduser'
 
-  constructor(public navCtrl: NavController) {
-    
-
+  constructor(public navCtrl: NavController, private _platform: Platform, public alertController: AlertController) {
+    if (this._platform.is("cordova")) {
+      this.API_URL = 'https://rastreador-mobile.herokuapp.com/adduser';
+    }
   }
   
   submit() {
     if(this.username=="" || this.name=="" || this.password=="" || this.email=="") {
-      alert('Todos os campos precisam ser preechidos');
+      this.presentAlert('Todos os campos precisam ser preechidos');
       return false;
     }
 
     if(!this.isEmailValid(this.email)) {
-      alert('Email inválido')
+      //alert('Email inválido')
+      this.presentAlert('Email inválido');
       return false;
     }
 
@@ -37,21 +39,31 @@ export class InscreverSePage {
       password: this.password
     }
 
-    //'https://rastreador-mobile.herokuapp.com/adduser'
-    axios.post('http://localhost:4000', data)
+    const _this = this;
+    
+    axios.post(this.API_URL, data)
     .then(function (response) {
-      //console.log(response);
-      alert('Usuário cadastrado')
+      _this.presentAlert('Usuário cadastrado com sucesso!');
+      _this.navCtrl.pop();
     })
     .catch(function (error) { 
-      console.log(error)
+      console.log(error);
       if (error.response.data == 'ER_DUP_ENTRY') {
-        alert('Esse login está em uso. Por favor, tente um diferente.');
+        _this.presentAlert('Esse login está em uso. Por favor, tente um diferente.');
         return false;
       }
-      alert('Erro ao cadastrar usuário. Código: ' + error.response.data);
+      _this.presentAlert('Erro ao cadastrar usuário. Código: ' + error.response.data);
       console.log(error);
     });
+  }
+
+  async presentAlert(message) {
+    const alert = await this.alertController.create({
+      message: message,
+      buttons: ['Ok']
+    });
+
+    await alert.present();
   }
 
   isEmailValid(email) {

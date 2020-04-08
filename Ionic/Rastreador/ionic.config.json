@@ -1,5 +1,13 @@
 {
   "name": "Rastreador",
-  "integrations": {},
-  "type": "ionic-angular"
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular",
+  "proxies": [
+    {
+      "path": "/adduser",
+      "proxyUrl": "https://rastreador-mobile.herokuapp.com/adduser"
+    }
+  ]
 }
