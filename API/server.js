@@ -4,11 +4,13 @@ const geolocation = require('./geolocation')
 const users = require('./users')
 const token = require('./token')
 const mailing = require('./mailing')
+const cors = require('cors')
 
 const app = express(); 
 const router = express.Router();
-app.use(express.json())
+app.use(express.json());
 app.use('/', router);
+app.use(cors());
 
 //Definindo as rotas
 router.get('/', (req, res) => res.sendStatus(200)); //Indica de a API está online

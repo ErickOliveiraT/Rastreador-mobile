@@ -10,32 +10,20 @@
     <div class="spacer" style="width:300px;height:13px;" id="inscreverSe-spacer5"></div>
     <ion-list id="inscreverSe-list1">
       <ion-item id="inscreverSe-input3">
-        <ion-label>
-          Nome
-        </ion-label>
-        <ion-input type="text" placeholder=""></ion-input>
+        <ion-input type="text" placeholder="Nome" [(ngModel)]="name" name="input-name"></ion-input>
       </ion-item>
       <ion-item id="inscreverSe-input4">
-        <ion-label>
-          Email
-        </ion-label>
-        <ion-input type="email" placeholder=""></ion-input>
+        <ion-input type="email" placeholder="Email" [(ngModel)]="email" name="input-email"></ion-input>
       </ion-item>
       <ion-item id="inscreverSe-input6">
-        <ion-label>
-          Login
-        </ion-label>
-        <ion-input type="text" placeholder=""></ion-input>
+        <ion-input type="text" placeholder="Login" [(ngModel)]="username" name="input-login"></ion-input>
       </ion-item>
       <ion-item id="inscreverSe-input5">
-        <ion-label>
-          Senha
-        </ion-label>
-        <ion-input type="text" placeholder=""></ion-input>
+        <ion-input type="password" placeholder="Senha" [(ngModel)]="password" name="input-password"></ion-input>
       </ion-item>
     </ion-list>
     <div class="spacer" style="width:300px;height:23px;" id="inscreverSe-spacer6"></div>
-    <button id="inscreverSe-button5" ion-button color="positive" block>
+    <button id="inscreverSe-button5" ion-button color="positive" (click)="submit()" block>
       Cadastrar
     </button>
     <div class="spacer" style="width:300px;height:2px;" id="inscreverSe-spacer4"></div>
