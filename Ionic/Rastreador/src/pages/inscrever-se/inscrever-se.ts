@@ -11,6 +11,7 @@ export class InscreverSePage {
   username:string;
   name:string;
   password:string;
+  password2:string;
   email:string;
   API_URL = '/adduser'
 
@@ -27,8 +28,12 @@ export class InscreverSePage {
     }
 
     if(!this.isEmailValid(this.email)) {
-      //alert('Email inválido')
       this.presentAlert('Email inválido');
+      return false;
+    }
+
+    if (this.password != this.password2) {
+      this.presentAlert('As senhas não correspondem')
       return false;
     }
 
