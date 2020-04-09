@@ -71,7 +71,7 @@ router.get('/getrectoken/:login?', async (req, res) => { //Consulta as coordenad
             users.getEmail(req.params.login)
             .then((email) => {
                 mailing.sendToken(response,email)
-                .then(res.sendStatus(200));
+                .then(res.status(200).send(email));
             });
         })
         .catch((error) => {res.status(500).send('Erro Interno: ' + error)});

@@ -9,14 +9,11 @@
   <form id="esqueciMinhaSenha-form3">
     <div class="spacer" style="width:300px;height:12px;" id="esqueciMinhaSenha-spacer8"></div>
     <ion-item id="esqueciMinhaSenha-input7">
-      <ion-label>
-        Confirme seu login
-      </ion-label>
-      <ion-input type="text" placeholder=""></ion-input>
+      <ion-input type="text" placeholder="Confirme seu login" [(ngModel)]="username" name="input-login2"></ion-input>
     </ion-item>
   </form>
   <div class="spacer" style="width:300px;height:0px;" id="esqueciMinhaSenha-spacer7"></div>
-  <button id="esqueciMinhaSenha-button7" ion-button color="positive" block>
+  <button id="esqueciMinhaSenha-button7" ion-button color="positive" (click)="getRecToken()" block>
     Recuperar senha
   </button>
 </ion-content>

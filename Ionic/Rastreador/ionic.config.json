@@ -12,6 +12,14 @@
     {
       "path": "/autenticate",
       "proxyUrl": "https://rastreador-mobile.herokuapp.com/autenticate"
+    },
+    {
+      "path": "/getrectoken",
+      "proxyUrl": "https://rastreador-mobile.herokuapp.com/getrectoken"
+    },
+    {
+      "path": "/setpassword",
+      "proxyUrl": "https://rastreador-mobile.herokuapp.com/setpassword"
     }
   ]
 }
