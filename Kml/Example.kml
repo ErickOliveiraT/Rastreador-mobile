@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom"><Document>
+<name>Example.kml</name>	<Style id="s_ylw-pushpin_hl">
+		<IconStyle>
+			<scale>1.3</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<StyleMap id="m_ylw-pushpin">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#s_ylw-pushpin</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#s_ylw-pushpin_hl</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Style id="s_ylw-pushpin">
+		<IconStyle>
+			<scale>1.1</scale>
+			<Icon>
+				<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>
+			</Icon>
+			<hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>
+		</IconStyle>
+	</Style>
+	<Placemark><name>Example</name><styleUrl>#m_ylw-pushpin</styleUrl>
+<LineString>
+<tessellate>1</tessellate>
+<coordinates>-46.95854,-22.34885,0
+-46.95863,-22.35075,0
+-46.9599,-22.3524,0
+-46.96206,-22.354,0
+-46.96442,-22.35575,0
+-46.96694,-22.35762,0
+-46.96907,-22.35988,0
+-46.96998,-22.36303,0
+-46.9702,-22.36591,0
+-46.97039,-22.36864,0
+-46.97059,-22.37139,0
+-46.97079,-22.37402,0
+-46.97099,-22.37649,0
+-46.97121,-22.37915,0
+-46.97141,-22.38165,0
+-46.97161,-22.38426,0
+-46.9718,-22.38663,0
+-46.972,-22.38894,0
+-46.97219,-22.39127,0
+-46.9724,-22.39373,0
+-46.97262,-22.39576,0
+-46.9734,-22.39796,0
+-46.97393,-22.39869,0
+-46.97297,-22.39917,0
+-46.97216,-22.39995,0
+-46.97144,-22.40074,0
+-46.97101,-22.4012,0
+-46.97058,-22.40165,0
+-46.97011,-22.40214,0
+-46.96965,-22.40263,0
+-46.96919,-22.40318,0
+-46.96858,-22.40403,0
+-46.96806,-22.40478,0
+-46.96751,-22.40551,0
+-46.96685,-22.40641,0
+-46.96631,-22.40733,0
+-46.96577,-22.40835,0
+-46.96531,-22.40932,0
+-46.96495,-22.41022,0
+-46.9646,-22.41114,0
+-46.9642,-22.41209,0
+-46.96381,-22.41309,0
+-46.9635,-22.41399,0
+-46.96292,-22.41493,0
+-46.96197,-22.41604,0
+-46.96136,-22.41673,0
+-46.96094,-22.41713,0
+-46.9603,-22.41698,0
+-46.95929,-22.41695,0
+-46.95843,-22.41696,0
+</coordinates>
+</LineString>
+</Placemark>
+</Document>
+</kml>
