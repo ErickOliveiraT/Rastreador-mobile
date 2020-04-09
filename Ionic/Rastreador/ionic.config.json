@@ -8,6 +8,10 @@
     {
       "path": "/adduser",
       "proxyUrl": "https://rastreador-mobile.herokuapp.com/adduser"
+    },
+    {
+      "path": "/autenticate",
+      "proxyUrl": "https://rastreador-mobile.herokuapp.com/autenticate"
     }
   ]
 }

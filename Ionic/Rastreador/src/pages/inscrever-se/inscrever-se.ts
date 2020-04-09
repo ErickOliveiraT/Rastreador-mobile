@@ -22,7 +22,7 @@ export class InscreverSePage {
   
   submit() {
     if(this.username=="" || this.name=="" || this.password=="" || this.email=="") {
-      this.presentAlert('Todos os campos precisam ser preechidos');
+      this.presentAlert('Todos os campos precisam ser preenchidos');
       return false;
     }
 
