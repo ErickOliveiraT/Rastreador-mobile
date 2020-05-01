@@ -1,11 +1,43 @@
-const axios = require('axios');
+const axios = require('axios')
 const mysql = require('mysql')
 const cred = require('./credencials')
 
 module.exports = {
 
-    getAddress(latitude, longitude) {
+    degreesToRadians(degrees) {
+        return degrees * Math.PI / 180;
+    },
 
+    calcDistance(lat1, lon1, lat2, lon2) {
+        var earthRadiusKm = 6371;
+      
+        var dLat = this.degreesToRadians(lat2-lat1);
+        var dLon = this.degreesToRadians(lon2-lon1);
+        lat1 = this.degreesToRadians(lat1);
+        lat2 = this.degreesToRadians(lat2);
+      
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        return earthRadiusKm * c;
+    },
+
+    calcTotalDistance(coordinates) {
+        let distance = 0;
+        let lat1 = 0;
+        let lat2 = 0;
+        let lon1 = 0;
+        let lon2 = 0; 
+        for (let i = 1; i < coordinates.length; i++) {
+            lat1 = coordinates[i-1].latitude;
+            lat2 = coordinates[i].latitude;
+            lon1 = coordinates[i-1].longitude;
+            lon2 = coordinates[i].longitude;
+            distance += this.calcDistance(lat1, lon1, lat2, lon2);
+        }
+        return distance;
+    },
+
+    getAddress(latitude, longitude) {
         const url = 'http://my.locationiq.com/v2/reverse.php?'
         const query = `token=${cred.token}&lat=${latitude}&lon=${longitude}&format=json`
         const getUrl = url+query;
@@ -31,7 +63,7 @@ module.exports = {
                 password: cred.password,
                 database: cred.database
             });
-
+            
             let filter = year + '-' + month + '-' + day + `%' and login = '${login}';`;
             const sql = `SELECT * FROM coordenadas WHERE hour LIKE '${filter}`;
             

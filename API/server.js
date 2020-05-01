@@ -58,7 +58,10 @@ router.get('/coordenadas/:dia?/:mes?/:ano?/:login?', async (req, res) => { //Con
         const valid = await token.checkJWT(req.params.login,req.headers.token);
         if(valid) {
             geolocation.getCoordinates(req.params.login, req.params.dia, req.params.mes, req.params.ano)
-            .then((response) => {res.send(response)})
+            .then((response) => {
+                response.push({total_distance: geolocation.calcTotalDistance(response)});
+                res.send(response);
+            })
             .catch((error) => {res.status(400).send(error)});
         } else res.sendStatus(401);
     } else res.sendStatus(400);
