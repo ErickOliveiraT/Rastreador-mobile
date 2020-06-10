@@ -13,6 +13,7 @@ export default function LoginForm({ changeForm, history }) {
 
   const submitLogin = async () => {
     await dispatch(login(user)).then(res => {
+      console.log('res.payload: ', res.payload);
       localStorage.setItem("loginValid", res.payload.data.valid.toString());
       history.push("/dashboard");
     });

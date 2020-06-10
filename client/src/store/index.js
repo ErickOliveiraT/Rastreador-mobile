@@ -5,7 +5,7 @@ import reducers from "./ducks";
 
 const client = axios.create({
   //all axios can be used, shown in axios documentation
-  baseURL: "http://localhost:4000",
+  baseURL: "https://rastreador-mobile.herokuapp.com",
   responseType: "json"
 });
 

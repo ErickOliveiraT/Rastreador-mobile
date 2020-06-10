@@ -54,7 +54,7 @@ export class InscreverSePage {
     .catch(function (error) { 
       console.log(error);
       if (error.response.data == 'ER_DUP_ENTRY') {
-        _this.presentAlert('Esse login está em uso. Por favor, tente um diferente.');
+        _this.presentAlert('Esse login já está em uso. Por favor, tente um diferente.');
         return false;
       }
       _this.presentAlert('Erro ao cadastrar usuário. Código: ' + error.response.data);
