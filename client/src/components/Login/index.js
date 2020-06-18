@@ -4,25 +4,44 @@ import Logo from "../../img/logo.png";
 import Snackbar from "@material-ui/core/Snackbar";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
+import { login, register, updateUser } from "../../store/ducks/user";
+import { useDispatch, useSelector } from "react-redux";
 import { useStyles } from "./style";
 
 export default function Login(props) {
   const classes = useStyles();
+
   const [loginForm, setLoginForm] = React.useState(true);
-  const [alertMessage, setAlertMessage] = React.useState("");
-  const [showAlert, setShowAlert] = React.useState(false);
+  const [showAlert, setShowAlertMessage] = React.useState(false);
+
+  const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
+
+  const submitLogin = () => {
+    dispatch(login(user, props.history, setShowAlertMessage));
+  };
+
+  const submitRegister = () => {
+    dispatch(register(user, setShowAlertMessage, handleChangeForm));
+  };
+
+  const handleChangeUser = e => {
+    const newUser = user;
+    newUser[e.target.id] = e.target.value;
+    dispatch(updateUser(newUser));
+  };
+
+  const handleChangeForm = () => {
+    setLoginForm(!loginForm);
+  };
 
   const handleAlertOpen = () => {
-    setShowAlert(true);
+    setShowAlertMessage(true);
   };
 
   const handleAlertClose = () => {
-    setShowAlert(false);
+    setShowAlertMessage(false);
   };
-
-  function changeForm() {
-    setLoginForm(!loginForm);
-  }
 
   return (
     <div className={classes.wrapper}>
@@ -44,12 +63,17 @@ export default function Login(props) {
         </Grid>
         {/* Login/Register Form */}
         {loginForm ? (
-          <LoginForm changeForm={changeForm} history={props.history} />
+          <LoginForm
+            handleChangeForm={handleChangeForm}
+            submitLogin={submitLogin}
+            handleChangeUser={handleChangeUser}
+          />
         ) : (
           <RegisterForm
-            changeForm={changeForm}
+            handleChangeForm={handleChangeForm}
             handleAlertOpen={handleAlertOpen}
-            setAlertMessage={setAlertMessage}
+            submitRegister={submitRegister}
+            handleChangeUser={handleChangeUser}
           />
         )}
       </Grid>
@@ -62,7 +86,7 @@ export default function Login(props) {
         ContentProps={{
           "aria-describedby": "message-id"
         }}
-        message={<span id="message-id">{alertMessage}</span>}
+        message={<span id="message-id">{user.alertMessage}</span>}
       />
     </div>
   );

@@ -11,6 +11,7 @@ const router = express.Router();
 app.use(express.json());
 app.use('/', router);
 app.use(cors());
+router.use(cors())
 
 //Definindo as rotas
 router.get('/', (req, res) => res.sendStatus(200)); //Indica de a API está online

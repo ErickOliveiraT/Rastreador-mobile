@@ -1,4 +1,5 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import Button from "@material-ui/core/Button";
@@ -6,6 +7,12 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
+import RoomIcon from "@material-ui/icons/Room";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import Avatar from "@material-ui/core/Avatar";
+import Grid from "@material-ui/core/Grid";
+import ButtonBase from "@material-ui/core/ButtonBase";
 
 const useStyles = makeStyles(theme => ({
   list: {
@@ -18,23 +25,24 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Menu({ history, getCoordinatesByLogin }) {
+export default function Menu({
+  handleLogout,
+  getCoordinates,
+  handleCancel,
+  handleInit,
+  handleAlertOpen,
+  setAlertMessage,
+  setViewPort
+}) {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.user);
   const [state, setState] = React.useState({
     top: false,
     left: false,
     bottom: false,
     right: false
   });
-
-  React.useEffect(() => {
-    console.log(currentMonth);
-  });
-
-  function logout() {
-    localStorage.setItem("loginValid", "false");
-    history.push("/");
-  }
 
   const toggleDrawer = (side, open) => event => {
     setState({ ...state, [side]: open });
@@ -43,23 +51,23 @@ export default function Menu({ history, getCoordinatesByLogin }) {
     return [...Array(size).keys()].map(i => i + startAt);
   }
   const months = [
-    { name: "Janeiro", tag: "JAN", days: range(1, 31) },
-    { name: "Fevereiro", tag: "FEB", days: range(1, 28) },
-    { name: "Março", tag: "MAR", days: range(1, 31) },
-    { name: "Abril", tag: "APR", days: range(1, 30) },
-    { name: "Maio", tag: "MAY", days: range(1, 31) },
-    { name: "Junho", tag: "JUN", days: range(1, 30) },
-    { name: "Julho", tag: "JUL", days: range(1, 31) },
-    { name: "Agosto", tag: "AUG", days: range(1, 31) },
-    { name: "Setembro", tag: "SEP", days: range(1, 30) },
-    { name: "Outubro", tag: "OCT", days: range(1, 31) },
-    { name: "Novembro", tag: "NOV", days: range(1, 30) },
-    { name: "Dezembro", tag: "DEC", days: range(1, 31) }
+    { name: "Janeiro", month: 1, days: range(1, 31) },
+    { name: "Fevereiro", month: 2, days: range(1, 28) },
+    { name: "Março", month: 3, days: range(1, 31) },
+    { name: "Abril", month: 4, days: range(1, 30) },
+    { name: "Maio", month: 5, days: range(1, 31) },
+    { name: "Junho", month: 6, days: range(1, 30) },
+    { name: "Julho", month: 7, days: range(1, 31) },
+    { name: "Agosto", month: 8, days: range(1, 31) },
+    { name: "Setembro", month: 9, days: range(1, 30) },
+    { name: "Outubro", month: 10, days: range(1, 31) },
+    { name: "Novembro", month: 11, days: range(1, 30) },
+    { name: "Dezembro", month: 12, days: range(1, 31) }
   ];
-  const [currentMonth, setCurrentMonth] = React.useState(months[0]);
+  const [currentMonth, setCurrentMonth] = React.useState(months[10]);
 
   const handleChange = e => {
-    setCurrentMonth(months.find(month => month.tag === e.target.value));
+    setCurrentMonth(months.find(month => month.month === e.target.value));
   };
 
   const sideContent = side => (
@@ -69,10 +77,28 @@ export default function Menu({ history, getCoordinatesByLogin }) {
       onClick={toggleDrawer(side, true)}
       onKeyDown={toggleDrawer(side, true)}
     >
+      <Grid container>
+        <Grid item xs={3}>
+          <Avatar style={{ margin: 10, backgroundColor: "blue" }}>
+            {user.name.charAt(0)}
+          </Avatar>
+        </Grid>
+        <Grid item xs={7}>
+          <h2 style={{ fontSize: 20, fontWeight: "normal" }}>{user.name}</h2>
+        </Grid>
+        <Grid item xs={2}>
+          {/* <ButtonBase
+            onClick={toggleDrawer(side, true)}
+            style={{ marginLeft: 10, marginTop: 10 }}
+          >
+            <ArrowBackIosIcon />
+          </ButtonBase> */}
+        </Grid>
+      </Grid>
       <FormControl className={classes.formControl}>
         <InputLabel htmlFor="month-helper">Escolha o mês</InputLabel>
         <Select
-          value={currentMonth.tag}
+          value={currentMonth.month}
           onChange={handleChange}
           inputProps={{
             name: "currentMonth",
@@ -81,7 +107,7 @@ export default function Menu({ history, getCoordinatesByLogin }) {
         >
           {/* Month options */}
           {months.map(month => (
-            <MenuItem key={month.tag} value={month.tag}>
+            <MenuItem key={month.month} value={month.month}>
               {month.name}
             </MenuItem>
           ))}
@@ -91,19 +117,44 @@ export default function Menu({ history, getCoordinatesByLogin }) {
       {currentMonth.days.map(day => (
         <Button
           key={day}
-          onClick={() => getCoordinatesByLogin(day, currentMonth.tag, 2019)}
+          onClick={() => {
+            handleCancel();
+            dispatch(
+              getCoordinates(
+                day,
+                currentMonth.month,
+                2019,
+                user.login,
+                handleAlertOpen,
+                setAlertMessage,
+                setViewPort
+              )
+            );
+          }}
         >
           {day}
         </Button>
       ))}
-
+      <div style={{ position: "relative", top: "15%" }}>
+        <Button
+          color="primary"
+          style={{ textAlign: "left", display: "block", width: "100%" }}
+          onClick={() => {
+            handleInit();
+          }}
+        >
+          <RoomIcon style={{ verticalAlign: "middle", paddingRight: 5 }} />
+          Última posição
+        </Button>
+      </div>{" "}
       {/* LOGOUT BUTTON */}
-      <div style={{ position: "relative", top: "50%" }}>
+      <div style={{ position: "relative", top: "18%" }}>
         <Button
           color="secondary"
           style={{ textAlign: "left", display: "block", width: "100%" }}
-          onClick={logout}
+          onClick={handleLogout}
         >
+          <ExitToAppIcon style={{ verticalAlign: "middle", paddingRight: 5 }} />
           Logout
         </Button>
       </div>
@@ -113,8 +164,8 @@ export default function Menu({ history, getCoordinatesByLogin }) {
   return (
     <div>
       <Button
-        variant="outlined"
-        color="default"
+        variant="contained"
+        color="primary"
         style={{ position: "absolute", top: 5, left: 5 }}
         onClick={toggleDrawer("left", true)}
       >
