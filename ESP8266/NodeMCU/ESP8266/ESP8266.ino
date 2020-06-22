@@ -12,9 +12,7 @@
 #define TX D8
 
 const char* ssid = "Tracker_ESP8266_SN01";
-const char* password = "debug-sn01";
-//const char* ssid = "House";
-//const char* password = "@#housejacare10";
+const char* password = "";
 
 int wifiStatus;
 SoftwareSerial serial1(RX, TX);
@@ -78,6 +76,8 @@ void loop() {
      if (WiFi.status() != WL_CONNECTED) {
         digitalWrite(LED_WIFI, LOW);
         Serial.println("No wifi");
+        delay(5000);
+        ESP.reset();
      } 
      else {
       digitalWrite(LED_WIFI, HIGH);
