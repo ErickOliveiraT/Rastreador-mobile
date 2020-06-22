@@ -12,7 +12,9 @@
 #define TX D8
 
 const char* ssid = "Tracker_ESP8266_SN01";
-const char* password = "";
+const char* password = "debug-sn01";
+//const char* ssid = "House";
+//const char* password = "@#housejacare10";
 
 int wifiStatus;
 SoftwareSerial serial1(RX, TX);
@@ -78,12 +80,14 @@ void loop() {
         Serial.println("No wifi");
      } 
      else {
+      digitalWrite(LED_WIFI, HIGH);
       digitalWrite(LED_POST, LOW);
     
       DynamicJsonDocument doc(2048);
       doc["login"] = "bargrall";
       doc["latitude"] = (float(latitude)/100000);
       doc["longitude"] = (float(longitude)/100000);
+      doc["api_key"] = "VTZWD16IbkW2ARzwJQjCQjwal7RUD5Q9";
       
       // Serialize JSON document
       String json;

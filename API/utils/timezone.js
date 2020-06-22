@@ -1,8 +1,9 @@
 const moment = require('moment-timezone');
 
 function getTime(timezone) {
-  let date = moment().tz(timezone).format('YYYY-MM-DD');
-  let time = moment().tz(timezone).format('HH:MM:SS');
+  const now = moment().tz(timezone).format();
+  let date = now.split('T')[0];
+  let time = now.split('T')[1].split('-')[0];
 
   let d_day = date.split('-')[2];
   let d_month = date.split('-')[1];
@@ -21,7 +22,6 @@ function getTime(timezone) {
   if (t_min.startsWith('0')) t_min = t_min.substring(1,t_min.length);
   if (t_sec.startsWith('0')) t_sec = t_sec.substring(1,t_sec.length);
   time = t_hour + ':' + t_min + ':' + t_sec;
-
   return date + ' ' + time;
 }
 
