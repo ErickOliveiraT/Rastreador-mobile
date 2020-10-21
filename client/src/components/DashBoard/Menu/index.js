@@ -123,7 +123,7 @@ export default function Menu({
               getCoordinates(
                 day,
                 currentMonth.month,
-                2019,
+                (new Date()).getFullYear(),
                 user.login,
                 handleAlertOpen,
                 setAlertMessage,

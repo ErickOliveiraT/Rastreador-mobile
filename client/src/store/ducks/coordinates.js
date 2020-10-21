@@ -62,12 +62,17 @@ export function getCoordinates(
     // in getCoordinatesStarted erase the state
     dispatch(getCoordinatesStarted());
     axios
-      .get(`http://localhost:4000/coordenadas/${day}/${month}/${year}/${login}`)
+      .get(`http://localhost:4000/coordenadas/${day}/${month}/${year}/${login}`, {
+        headers: {
+          'token': `${localStorage.getItem('token')}`
+        }
+      })
       .then(res => {
         let newPoints = [];
         const resCoordinates = res.data;
         const lastCoordinate = [];
-        if (resCoordinates.length > 0) {
+        console.log(resCoordinates)
+        if (resCoordinates && resCoordinates.length > 0 && resCoordinates[0].id) {
           for (let i = 0; i < resCoordinates.length; i++) {
             newPoints.push({
               hour: resCoordinates[i].hour,
@@ -77,10 +82,11 @@ export function getCoordinates(
               ]
             });
           }
+          newPoints.pop(); // FIX LAST OBJECT LIKE {total-distance: 0}
           // last position becomes the last position of the date
-          console.log(newPoints);
           lastCoordinate.push(newPoints[newPoints.length - 1].coordinates);
           console.log(newPoints.length);
+          console.log('last ', newPoints[newPoints.length - 1].coordinates);
           dispatch(getCoordinatesSuccess(newPoints, lastCoordinate[0]));
           if (setViewPort) {
             setViewPort(prevState => ({
@@ -110,11 +116,16 @@ export function getCoordinates(
 export function getLastCoordinate(login, setViewPort = false) {
   return function(dispatch) {
     axios
-      .get(`http://localhost:4000/ultimacoordenada/${login}`)
+      .get(`http://localhost:4000/lastcoordinate/${login}`, {
+        headers: {
+          'token': `${localStorage.getItem('token')}`
+        }
+      })
       .then(res => {
+        console.log(res.data)
         const lastCoordinate = [
-          Number.parseFloat(res.data[0].longitude),
-          Number.parseFloat(res.data[0].latitude)
+          Number.parseFloat(res.data.longitude),
+          Number.parseFloat(res.data.latitude)
         ];
         dispatch(getLastCoordinatesSuccess(lastCoordinate));
         if (setViewPort) {

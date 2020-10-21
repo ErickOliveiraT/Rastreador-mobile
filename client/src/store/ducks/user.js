@@ -89,7 +89,7 @@ export function login(user, history, setShowAlertMessage) {
     console.log("loginstarted");
     dispatch(loginStarted());
     axios
-      .post("http://localhost:4000/autenticate", {
+      .post("http://localhost:4000/authenticate", {
         login: user.login,
         password: user.password
       })
@@ -100,6 +100,7 @@ export function login(user, history, setShowAlertMessage) {
         if (res.data.valid === true) {
           console.log("Login valido");
           localStorage.setItem("loginValid", "true");
+          localStorage.setItem("token", res.data.token);
           localStorage.setItem("login", user.login);
           localStorage.setItem("name", res.data.name);
           history.push("/dashboard");
