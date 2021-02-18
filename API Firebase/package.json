@@ -1,0 +1,25 @@
+{
+  "name": "rastreador-api",
+  "version": "1.0.0",
+  "description": "API do Rastreador Veicular",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/erickoliveirat/rastreador-mobile"
+  },
+  "author": "Erick de Oliveira Teixeira",
+  "license": "ISC",
+  "dependencies": {
+    "@sendgrid/mail": "^7.4.2",
+    "axios": "^0.21.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "firebase-admin": "^9.5.0",
+    "md5": "^2.3.0",
+    "moment-timezone": "^0.5.33",
+    "mysql": "^2.18.1"
+  }
+}
