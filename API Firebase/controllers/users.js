@@ -36,8 +36,7 @@ async function getEmail(firebase, uid) {
 
 async function createUser(firebase, user) {
     try {
-        let userRecord = await firebase.auth().createUser(user);
-        firebase.firestore().collection('users').doc(user.uid).set({
+        await firebase.firestore().collection('users').doc(user.uid).set({
             name: user.displayName,
             uid: user.uid,
             email: user.email,
@@ -45,6 +44,9 @@ async function createUser(firebase, user) {
             password: md5(user.password),
             created_at: new Date()
         });
+        delete user.phoneNumber;
+        let userRecord = await firebase.auth().createUser(user);
+        token.generateAPIKey(firebase, user.uid);
         return { created: true, userRecord: userRecord };
     }
     catch (error) {

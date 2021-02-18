@@ -1,19 +1,7 @@
 const database = require('./database');
 const cred = require('../credencials');
 const jwt = require('jsonwebtoken');
-
-// Generate random token
-function getToken() {
-    const pos = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let shuffled = pos.split('').sort(function() {return 0.5-Math.random()} ).join('');
-    var token = '';
-    for (let i = 0; i < 32; i++) {
-        let rd = Math.floor(pos.length * Math.random());
-        token += shuffled[rd];
-    }
-    
-    return token;
-}
+const nanoid = require('nanoid');
 
 // Check if a token is valid
 function checkToken(user, token) {
@@ -84,34 +72,18 @@ async function checkRecToken(firebase, uid, token) {
     return valid_recToken === token;
 }
 
-//Reset recToken of an user
-async function resetRecToken(login) {
-    let con = await database.getConnection();
-    
-    const trash = getToken();
-    con.connect(function(err) {
-        if (err) throw(err);
-        let qry = `UPDATE users SET recToken = '${trash}' WHERE login = '${login}'`
-        con.query(qry, function (err, result, fields) {
-          if (err) throw(err);
-        });
-    }); 
+// Check API Key
+async function checkAPIKey(firebase, uid, api_key) {
+    let user = (await firebase.firestore().collection('users').doc(uid).get()).data();
+    return user.api_key === api_key;
 }
 
-// Check API Key
-function checkAPIKey(user, api_key) {
-    return new Promise(async (resolve, reject) => {
-        let con = await database.getConnection();
-        
-        con.connect(function(err) {
-            if (err) reject(false);
-            let qry = `SELECT api_key FROM users WHERE login = '${user}'`;
-            con.query(qry, function (err, result, fields) {
-              if (err) return reject(false);
-              resolve(result[0].api_key == api_key);
-            });
-        });
+// Generate API Key
+function generateAPIKey(firebase, uid) {
+    firebase.firestore().collection('users').doc(uid).update({
+        api_key: nanoid.nanoid(16),
+        updated_at: new Date()
     });
 }
 
-module.exports = {checkAPIKey, resetRecToken, checkRecToken, getRecToken, checkJWT, getJWTOwner, getJWT, checkToken, getToken}
+module.exports = {checkAPIKey, checkRecToken, getRecToken, checkJWT, getJWTOwner, getJWT, checkToken, generateAPIKey}

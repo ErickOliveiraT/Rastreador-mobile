@@ -97,19 +97,19 @@ app.post('/changepassword', async (req, res) => { //Muda a senha de um usuário
 });
 
 app.post('/addcoordenada', async (req, res) => { //Adiciona uma nova coordenada
-    const login = req.body.login;
+    const uid = req.body.login;
     const latitude = req.body.latitude;
     const longitude = req.body.longitude;
     const api_key = req.body.api_key;
 
     if (!api_key) return res.status(400).send('Chave da API não fornecida');
-    const valid = await token.checkAPIKey(login, api_key);
+    const valid = await token.checkAPIKey(admin, uid, api_key);
     if (!valid) return res.status(401).send('Chave da API inválida');
 
     try {
         const address = await geolocation.getAddress(latitude, longitude);
         if (!address) return res.status(404).send('Endereço não encontrado');
-        geolocation.storeCoordinates(login, latitude, longitude, address)
+        geolocation.storeCoordinates(uid, latitude, longitude, address)
             .then(() => { res.sendStatus(200) })
             .catch((err) => { res.status(500).send(err) });
     } catch (error) {
