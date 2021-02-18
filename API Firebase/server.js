@@ -33,9 +33,67 @@ app.post('/adduser', async (req, res) => { //Adiciona um novo usuário
     };
 
     let response = await users.createUser(admin, user);
-
     if (response.created) return res.status(200).send(JSON.stringify(response));
     else return res.status(400).send(JSON.stringify(response));
+});
+
+app.post('/auth', async (req, res) => { //Autentica um usuário
+    const user = {
+        uid: req.body.login,
+        password_hash: md5(req.body.password)
+    };
+
+    let response = await users.auth(admin, user);
+    if (!response.valid) return res.status(401).send(JSON.stringify(response));
+    else return res.status(200).send(JSON.stringify(response));
+});
+
+app.post('/verifytoken', async (req, res) => { //Verifica um token de Autenticação
+    const provided_token = req.body.token;
+    const uid = req.body.login;
+
+    let valid = await token.checkJWT(uid, provided_token);
+    if (valid) return res.status(200).send(JSON.stringify({ valid: true }));
+    else return res.status(200).send(JSON.stringify({ valid: false }));
+});
+
+app.get('/getrectoken/:login?', async (req, res) => { //Solicita um token de recuperação de senha
+    if (!req.params.login) return res.status(400).send('Parâmetros inválidos');
+
+    const valid = await token.checkJWT(req.params.login, req.headers.authorization);
+    if (!valid) return res.status(401).send('O usuário não está logado');
+
+    try {
+        const tk = await token.getRecToken(admin, req.params.login);
+        if (tk.error) return res.status(500).send(JSON.stringify({ error: tk.error }));
+        const email = await users.getEmail(admin, req.params.login);
+        const response = await mailing.sendToken(tk, email);
+        if (response.sent) res.status(200).send(JSON.stringify(response));
+        else res.status(500).send(JSON.stringify(response));
+    } catch (err) {
+        res.status(500).send(JSON.stringify({ error: err }));
+    }
+});
+
+app.post('/changepassword', async (req, res) => { //Muda a senha de um usuário
+    const uid = req.body.login;
+    const logged = await token.checkJWT(uid, req.headers.authorization);
+    if (!logged) return res.status(401).send('O usuário não está logado');
+
+    const recToken = req.body.recToken;
+    if (!recToken) return res.status(400).send('Token de recuperação se senha não informado');
+    const password = req.body.password;
+    if (!password || password.length == 0) return res.status(400).send('Nova senha não informada ou vazia');
+
+    try {
+        const valid = await token.checkRecToken(admin, uid, recToken);
+        if (!valid) return res.status(401).send('Token de recuperação de senha inválido');
+        let response = await users.changePassword(admin, uid, password);
+        if (response.error) return res.status(500).send(JSON.stringify({ error: response.error }));
+        return res.sendStatus(200);
+    } catch (err) {
+        res.status(500).send(JSON.stringify({ error: err }));
+    }
 });
 
 app.post('/addcoordenada', async (req, res) => { //Adiciona uma nova coordenada
@@ -57,20 +115,6 @@ app.post('/addcoordenada', async (req, res) => { //Adiciona uma nova coordenada
     } catch (error) {
         res.status(500).send(error);
     }
-});
-
-app.post('/authenticate', (req, res) => { //Autentica um usuário
-    const user = {
-        login: req.body.login,
-        password_hash: md5(req.body.password)
-    };
-
-    users.authenticate(user)
-        .then((response) => {
-            if (response.valid) return res.status(200).send(JSON.stringify(response));
-            res.status(400).send(JSON.stringify(response));
-        })
-        .catch((error) => { res.status(500).send(error) });
 });
 
 app.get('/coordenadas/:dia?/:mes?/:ano?/:login?', async (req, res) => { //Consulta as coordenadas do dia
@@ -96,51 +140,6 @@ app.get('/lastcoordinate/:login?', async (req, res) => { //Consulta as coordenad
     geolocation.getLastCoordinate(req.params.login)
         .then((response) => { res.status(200).send(response); })
         .catch((error) => { res.status(500).send(error) });
-});
-
-app.get('/getrectoken/:login?', async (req, res) => { //Solicita um token de recuperação de senha
-    if (!req.params.login) return res.status(400).send('Parâmetros inválidos');
-
-    const valid = await token.checkJWT(req.params.login, req.headers.token);
-    if (!valid) return res.status(401).send('O usuário não está logado');
-
-    try {
-        const tk = await token.getRecToken(req.params.login);
-        const email = await users.getEmail(req.params.login);
-        const response = await mailing.sendToken(tk, email);
-        if (response.sent) res.status(200).send(JSON.stringify(response));
-        else res.status(500).send(response);
-    } catch (err) {
-        res.status(500).send(err);
-    }
-});
-
-app.post('/setpassword', async (req, res) => { //Muda a senha de um usuário
-    const login = req.body.login;
-    const logged = await token.checkJWT(login, req.headers.token);
-    if (!logged) return res.status(401).send('O usuário não está logado');
-
-    const recToken = req.body.recToken;
-    if (!recToken) return res.status(400).send('Token de recuperação se senha não informado');
-    const password = req.body.password;
-    if (!password || password.length == 0) return res.status(400).send('Nova senha não informada ou vazia');
-    const password_hash = md5(req.body.password);
-
-    try {
-        const valid = await token.checkRecToken(login, recToken);
-        if (!valid) return res.status(401).send('Token de recuperação de senha inválido');
-        users.changePassword(login, password_hash)
-            .then((response) => {
-                if (response.changed) {
-                    token.resetRecToken(login);
-                    return res.status(200).send(JSON.stringify(response));
-                }
-                res.status(500).send(JSON.stringify(response));
-            })
-            .catch((err) => { res.status(500).send(err) });
-    } catch (err) {
-        res.status(500).send(err);
-    }
 });
 
 app.listen(process.env.PORT || 4000);

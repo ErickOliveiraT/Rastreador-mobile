@@ -2,22 +2,6 @@ const database = require('./database');
 const cred = require('../credencials');
 const jwt = require('jsonwebtoken');
 
-//Store passwords recovery token
-function storeRecToken(user, token) {
-    return new Promise(async (resolve, reject) => {
-        let con = await database.getConnection();
-        
-        con.connect(function(err) {
-            if (err) reject(err);
-            var sql = `UPDATE users SET recToken = '${token}' where login = '${user}'`;
-            con.query(sql, function (err, result) {
-                if (err) reject(err);
-                resolve(true);
-            });
-        });
-    });
-}
-
 // Generate random token
 function getToken() {
     const pos = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -75,7 +59,7 @@ async function checkJWT(user, token) {
 }
 
 //Get password recovery token
-async function getRecToken(user) {
+async function getRecToken(firebase, uid) {
     const pos = "0123456789";
     let shuffled = pos.split('').sort(function() {return 0.5-Math.random()} ).join('');
     var token = 'TR-';
@@ -84,29 +68,20 @@ async function getRecToken(user) {
         token += shuffled[rd];
     }
     try {
-        await storeRecToken(user, token);
-        return token;
+        await firebase.firestore().collection('users').doc(uid).update({
+            recToken: token,
+            updated_at: new Date()
+        });
+        return true;
     } catch(err) {
-        console.log(err);
-        return false;
+        return {error: err};
     }
-    
 }
 
 // Check if a recToken is valid
-function checkRecToken(user, token) {
-    return new Promise(async (resolve, reject) => {
-        let con = await database.getConnection();
-        
-        con.connect(function(err) {
-            if (err) reject(err);
-            let qry = `SELECT email,recToken FROM users WHERE login = '${user}'`
-            con.query(qry, function (err, result, fields) {
-              if (err) reject(err);
-              resolve(result[0].recToken == token);
-            });
-        });
-    });
+async function checkRecToken(firebase, uid, token) {
+    let valid_recToken = (await firebase.firestore().collection('users').doc(uid).get()).data().recToken;
+    return valid_recToken === token;
 }
 
 //Reset recToken of an user
@@ -139,4 +114,4 @@ function checkAPIKey(user, api_key) {
     });
 }
 
-module.exports = {checkAPIKey, resetRecToken, checkRecToken, getRecToken, checkJWT, getJWTOwner, getJWT, checkToken, getToken, storeRecToken}
+module.exports = {checkAPIKey, resetRecToken, checkRecToken, getRecToken, checkJWT, getJWTOwner, getJWT, checkToken, getToken}
