@@ -108,12 +108,11 @@ app.post('/addcoordenada', async (req, res) => { //Adiciona uma nova coordenada
 
     try {
         const address = await geolocation.getAddress(latitude, longitude);
-        if (!address) return res.status(404).send('Endereço não encontrado');
-        geolocation.storeCoordinates(uid, latitude, longitude, address)
-            .then(() => { res.sendStatus(200) })
-            .catch((err) => { res.status(500).send(err) });
+        let response = await geolocation.storeCoordinates(admin, uid, latitude, longitude, address);
+        if (response.stored) res.sendStatus(200)
+        else res.status(500).send(JSON.stringify(response));
     } catch (error) {
-        res.status(500).send(error);
+        res.status(500).send(JSON.stringify({error: error}));
     }
 });
 
@@ -128,17 +127,6 @@ app.get('/coordenadas/:dia?/:mes?/:ano?/:login?', async (req, res) => { //Consul
             response.push({ total_distance: geolocation.calcTotalDistance(response) });
             res.status(200).send(response);
         })
-        .catch((error) => { res.status(500).send(error) });
-});
-
-app.get('/lastcoordinate/:login?', async (req, res) => { //Consulta as coordenadas do dia
-    if (!req.params.login) return res.status(400).send('Parâmetros inválidos');
-
-    const valid = await token.checkJWT(req.params.login, req.headers.token);
-    if (!valid) return res.status(401).send('O usuário não está logado');
-
-    geolocation.getLastCoordinate(req.params.login)
-        .then((response) => { res.status(200).send(response); })
         .catch((error) => { res.status(500).send(error) });
 });
 
