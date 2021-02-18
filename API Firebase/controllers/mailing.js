@@ -1,22 +1,32 @@
-const sgMail = require('@sendgrid/mail');
+const nodemailer = require('nodemailer');
 const cred = require('../credencials');
 
-sgMail.setApiKey(cred.sg_api_key);
+async function sendRecoveryToken(token, email) {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: cred.email,
+      pass: cred.email_password
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+  });
 
-async function sendToken(token, email) {
-  const msg = {
-    from: 'projetorastreadorcom241@gmail.com',
+  const mailOptions = {
+    from: cred.email,
     to: email,
     subject: 'Seu Token de Recuperação de Senha',
-    text: `Utilize o código ${token} para redefinir sua senha do Rastreador-Mobile`,
+    text: `Utilize o código ${token} para redefinir sua senha do Rastreador`
   };
+
   try {
-    await sgMail.send(msg);
-    return {sent: true, email: email};
-  } catch (err) {
-    console.log(err);
-    return {sent: false, email: email, error: err};
+    await transporter.sendMail(mailOptions);
+    return {sent: true, sent_to: email};
+  }
+  catch (error) {
+    return {sent: false, error: error};
   }
 }
 
-module.exports = {sendToken}
+module.exports = { sendRecoveryToken }

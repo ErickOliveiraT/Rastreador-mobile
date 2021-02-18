@@ -67,7 +67,7 @@ app.get('/getrectoken/:login?', async (req, res) => { //Solicita um token de rec
         const tk = await token.getRecToken(admin, req.params.login);
         if (tk.error) return res.status(500).send(JSON.stringify({ error: tk.error }));
         const email = await users.getEmail(admin, req.params.login);
-        const response = await mailing.sendToken(tk, email);
+        const response = await mailing.sendRecoveryToken(tk, email);
         if (response.sent) res.status(200).send(JSON.stringify(response));
         else res.status(500).send(JSON.stringify(response));
     } catch (err) {

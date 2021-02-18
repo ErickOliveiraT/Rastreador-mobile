@@ -60,7 +60,7 @@ async function getRecToken(firebase, uid) {
             recToken: token,
             updated_at: new Date()
         });
-        return true;
+        return token;
     } catch(err) {
         return {error: err};
     }
