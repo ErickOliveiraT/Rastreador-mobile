@@ -1,12 +1,7 @@
 node_modules
 *.lock
-API/credencials.js
-API/_old.js
+server/credencials.js
 Database/
-ESP8266/Exemplo Gps
-Testes/
-Ionic/Rastreador/src/pages/login/credentials.js
+device/Exemplo Gps
+tests/
 */code.py
-_old_API/
-API Firebase/firebase/rastreador-ac613.json
-API Firebase/credencials.js
