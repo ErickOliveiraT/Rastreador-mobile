@@ -5,7 +5,7 @@ sgMail.setApiKey(cred.sg_api_key);
 
 async function sendToken(token, email) {
   const msg = {
-    from: 'projetorastreadorcom241@gmail.com',
+    from: cred.email,
     to: email,
     subject: 'Seu Token de Recuperação de Senha',
     text: `Utilize o código ${token} para redefinir sua senha do Rastreador-Mobile`,

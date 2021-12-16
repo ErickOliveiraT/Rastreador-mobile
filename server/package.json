@@ -4,7 +4,7 @@
   "description": "rastreador api",
   "main": "server.js",
   "scripts": {
-    "test": "node server.js"
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",

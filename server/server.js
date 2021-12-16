@@ -24,7 +24,7 @@ app.post('/adduser', (req, res) => { //Adiciona um novo usuário
 
     users.storeUser(user)
         .then((response) => {
-            if (response.stored) return res.status(200).send(JSON.stringify(response));
+            if (response.stored) return res.status(200).send(response);
             res.status(400).send(response);
         })
         .catch((error) => { res.status(400).send(error) });
@@ -42,7 +42,6 @@ app.post('/addcoordenada', async (req, res) => { //Adiciona uma nova coordenada
 
     try {
         const address = await geolocation.getAddress(latitude, longitude);
-        if (!address) return res.status(404).send('Endereço não encontrado');
         geolocation.storeCoordinates(login, latitude, longitude, address)
             .then(() => { res.sendStatus(200) })
             .catch((err) => { res.status(500).send(err) });
@@ -51,21 +50,21 @@ app.post('/addcoordenada', async (req, res) => { //Adiciona uma nova coordenada
     }
 });
 
-app.post('/authenticate', (req, res) => { //Autentica um usuário
+app.post('/auth', (req, res) => { //Autentica um usuário
     const user = {
         login: req.body.login,
         password_hash: md5(req.body.password)
     };
 
-    users.authenticate(user)
+    users.auth(user)
         .then((response) => {
-            if (response.valid) return res.status(200).send(JSON.stringify(response));
-            res.status(400).send(JSON.stringify(response));
+            if (response.valid) return res.status(200).send(response);
+            res.status(400).send(response);
         })
         .catch((error) => { res.status(500).send(error) });
 });
 
-app.get('/coordenadas/:dia?/:mes?/:ano?/:login?', async (req, res) => { //Consulta as coordenadas do dia
+app.get('/coordinates/:dia?/:mes?/:ano?/:login?', async (req, res) => { //Consulta as coordenadas do dia
     if (!req.params.ano || !req.params.ano || !req.params.dia || !req.params.login) return res.status(400).send('Parâmetros inválidos');
 
     const valid = await token.checkJWT(req.params.login, req.headers.token);
@@ -100,7 +99,7 @@ app.get('/getrectoken/:login?', async (req, res) => { //Solicita um token de rec
         const tk = await token.getRecToken(req.params.login);
         const email = await users.getEmail(req.params.login);
         const response = await mailing.sendToken(tk, email);
-        if (response.sent) res.status(200).send(JSON.stringify(response));
+        if (response.sent) res.status(200).send(response);
         else res.status(500).send(response);
     } catch (err) {
         res.status(500).send(err);
@@ -125,9 +124,9 @@ app.post('/setpassword', async (req, res) => { //Muda a senha de um usuário
             .then((response) => {
                 if (response.changed) {
                     token.resetRecToken(login);
-                    return res.status(200).send(JSON.stringify(response));
+                    return res.status(200).send(response);
                 }
-                res.status(500).send(JSON.stringify(response));
+                res.status(500).send(response);
             })
             .catch((err) => { res.status(500).send(err) });
     } catch (err) {

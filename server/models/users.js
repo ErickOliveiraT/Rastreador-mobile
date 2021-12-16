@@ -21,7 +21,7 @@ function storeUser(user) {
     });
 }
 
-function authenticate(user) {
+function auth(user) {
     return new Promise(async (resolve) => {
         let con = await database.getConnection();
         
@@ -77,4 +77,4 @@ function getEmail(login) {
     });
 }
 
-module.exports = {storeUser, authenticate, changePassword, getEmail}
+module.exports = {storeUser, auth, changePassword, getEmail}
