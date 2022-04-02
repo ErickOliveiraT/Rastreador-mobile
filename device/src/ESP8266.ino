@@ -97,7 +97,7 @@ void loop() {
       HTTPClient http;
       
       // Send request
-      http.begin("http://rastreador-mobile.herokuapp.com/addcoordenada");
+      http.begin("http://rastreador-335322.uc.r.appspot.com/addcoordinate");
       http.addHeader("Content-Type", "application/json");
       http.POST(json);
       

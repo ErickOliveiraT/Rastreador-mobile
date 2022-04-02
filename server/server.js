@@ -30,7 +30,7 @@ app.post('/adduser', (req, res) => { //Adiciona um novo usuário
         .catch((error) => { res.status(400).send(error) });
 });
 
-app.post('/addcoordenada', async (req, res) => { //Adiciona uma nova coordenada
+app.post('/addcoordinate', async (req, res) => { //Adiciona uma nova coordenada
     const login = req.body.login;
     const latitude = req.body.latitude;
     const longitude = req.body.longitude;
@@ -64,13 +64,13 @@ app.post('/auth', (req, res) => { //Autentica um usuário
         .catch((error) => { res.status(500).send(error) });
 });
 
-app.get('/coordinates/:dia?/:mes?/:ano?/:login?', async (req, res) => { //Consulta as coordenadas do dia
-    if (!req.params.ano || !req.params.ano || !req.params.dia || !req.params.login) return res.status(400).send('Parâmetros inválidos');
+app.get('/coordinates/:year?/:month?/:day?/:login?', async (req, res) => { //Consulta as coordenadas do dia
+    if (!req.params.year || !req.params.month || !req.params.day || !req.params.login) return res.status(400).send('Parâmetros inválidos');
 
     const valid = await token.checkJWT(req.params.login, req.headers.token);
     if (!valid) return res.status(401).send('O usuário não está logado');
 
-    geolocation.getCoordinates(req.params.login, req.params.dia, req.params.mes, req.params.ano)
+    geolocation.getCoordinates(req.params.login, req.params.year, req.params.month, req.params.day)
         .then((response) => {
             response.push({ total_distance: geolocation.calcTotalDistance(response) });
             res.status(200).send(response);
@@ -78,7 +78,7 @@ app.get('/coordinates/:dia?/:mes?/:ano?/:login?', async (req, res) => { //Consul
         .catch((error) => { res.status(500).send(error) });
 });
 
-app.get('/lastcoordinate/:login?', async (req, res) => { //Consulta as coordenadas do dia
+app.get('/lastcoordinate/:login?', async (req, res) => { //Consulta a última coordenada registrada
     if (!req.params.login) return res.status(400).send('Parâmetros inválidos');
 
     const valid = await token.checkJWT(req.params.login, req.headers.token);

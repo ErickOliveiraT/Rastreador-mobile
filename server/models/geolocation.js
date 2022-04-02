@@ -1,4 +1,4 @@
-const timezone = require('../utils/timezone');
+const moment = require('moment');
 const database = require('./database');
 const cred = require('../credencials');
 const axios = require('axios');
@@ -53,11 +53,11 @@ async function getAddress(latitude, longitude) {
     }
 }
 
-function getCoordinates(login, day, month, year) {
+function getCoordinates(login, year, month, day) {
     return new Promise(async (resolve, reject) => {
         let con = await database.getConnection();
         
-        let filter = year + '-' + month + '-' + day + `%' and login = '${login}';`;
+        let filter = `${year}-${month}-${day}%' and login = '${login}';`;
         const sql = `SELECT * FROM coordenadas WHERE hour LIKE '${filter}`;
         
         con.connect(function(err) {
@@ -96,16 +96,16 @@ function storeCoordinates(login, latitude, longitude, address) {
     return new Promise(async (resolve, reject) => {
         let con = await database.getConnection();
 
-        const dateTime = timezone.getTime('America/Sao_Paulo');
+        const dateTime = moment().utcOffset(-3).format('YYYY-DD-MM HH:mm:ss');
 
         if (!address) var sql = `INSERT INTO coordenadas(login,latitude,longitude,hour) VALUES('${login}','${latitude}','${longitude}','${dateTime}')`;
         else {
-            let road = address.road;
-            let country = address.country;
-            let neighbourhood = address.neighbourhood;
-            let city = address.city;
-            let state = address.state;
-            let suburb = address.suburb;
+            let road = address.road || null;
+            let country = address.country || null;
+            let neighbourhood = address.neighbourhood || null;
+            let city = address.city || null;
+            let state = address.state || null;
+            let suburb = address.suburb || null;
             var sql = `INSERT INTO coordenadas(login,latitude,longitude,hour,road,neighbourhood,suburb,city,state,country) VALUES('${login}','${latitude}','${longitude}','${dateTime}','${road}','${neighbourhood}','${suburb}','${city}','${state}','${country}')`;
         }
         

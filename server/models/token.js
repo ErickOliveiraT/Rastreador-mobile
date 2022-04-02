@@ -31,22 +31,6 @@ function getToken() {
     return token;
 }
 
-// Check if a token is valid
-function checkToken(user, token) {
-    return new Promise(async (resolve, reject) => {
-        let con = await database.getConnection();
-        
-        con.connect(function(err) {
-            if (err) reject(err);
-            let qry = `SELECT token FROM users WHERE login = '${user}'`
-            con.query(qry, function (err, result, fields) {
-              if (err) reject(err);
-              resolve(result[0].token == token);
-            });
-        });
-    });
-}
-
 //Generate a Json Web Token
 function getJWT(login) {
     const token = jwt.sign({login: login}, cred.secret, {expiresIn: 86400});
@@ -139,4 +123,4 @@ function checkAPIKey(user, api_key) {
     });
 }
 
-module.exports = {checkAPIKey, resetRecToken, checkRecToken, getRecToken, checkJWT, getJWTOwner, getJWT, checkToken, getToken, storeRecToken}
+module.exports = {checkAPIKey, resetRecToken, checkRecToken, getRecToken, checkJWT, getJWTOwner, getJWT, getToken, storeRecToken}
