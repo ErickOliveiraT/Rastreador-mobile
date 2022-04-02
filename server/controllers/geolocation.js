@@ -92,13 +92,14 @@ function getLastCoordinate(login) {
     });
 }
 
-function storeCoordinates(login, latitude, longitude, address) {
+function storeCoordinate(login, latitude, longitude, address, timestamp, datetime) {
     return new Promise(async (resolve, reject) => {
         let con = await database.getConnection();
 
-        const dateTime = moment().utcOffset(-3).format('YYYY-DD-MM HH:mm:ss');
+        if (!datetime) datetime = moment().utcOffset(-3).format('YYYY-DD-MM HH:mm:ss');
+        if (!timestamp) timestamp = null;
 
-        if (!address) var sql = `INSERT INTO coordenadas(login,latitude,longitude,hour) VALUES('${login}','${latitude}','${longitude}','${dateTime}')`;
+        if (!address) var sql = `INSERT INTO coordenadas(login,latitude,longitude,hour,timestamp) VALUES('${login}','${latitude}','${longitude}','${datetime}','${timestamp}')`;
         else {
             let road = address.road || null;
             let country = address.country || null;
@@ -106,7 +107,7 @@ function storeCoordinates(login, latitude, longitude, address) {
             let city = address.city || null;
             let state = address.state || null;
             let suburb = address.suburb || null;
-            var sql = `INSERT INTO coordenadas(login,latitude,longitude,hour,road,neighbourhood,suburb,city,state,country) VALUES('${login}','${latitude}','${longitude}','${dateTime}','${road}','${neighbourhood}','${suburb}','${city}','${state}','${country}')`;
+            var sql = `INSERT INTO coordenadas(login,latitude,longitude,hour,road,neighbourhood,suburb,city,state,country,timestamp) VALUES('${login}','${latitude}','${longitude}','${datetime}','${road}','${neighbourhood}','${suburb}','${city}','${state}','${country}','${timestamp}')`;
         }
         
         con.connect(function(err) {
@@ -119,4 +120,4 @@ function storeCoordinates(login, latitude, longitude, address) {
     });
 }
 
-module.exports = {storeCoordinates, getCoordinates, getAddress, calcTotalDistance, getLastCoordinate}
+module.exports = {storeCoordinate, getCoordinates, getAddress, calcTotalDistance, getLastCoordinate}

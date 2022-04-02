@@ -1,11 +1,13 @@
-const geolocation = require('./models/geolocation');
-const users = require('./models/users');
-const token = require('./models/token');
-const mailing = require('./models/mailing');
+const geolocation = require('./controllers/geolocation');
+const users = require('./controllers/users');
+const token = require('./controllers/token');
+const mailing = require('./controllers/mailing');
+const database = require('./controllers/database');
 
 const express = require('express');
 const md5 = require('md5');
 const cors = require('cors');
+const moment = require('moment');
 
 const app = express();
 app.use(express.json());
@@ -35,19 +37,51 @@ app.post('/addcoordinate', async (req, res) => { //Adiciona uma nova coordenada
     const latitude = req.body.latitude;
     const longitude = req.body.longitude;
     const api_key = req.body.api_key;
+    const timestamp = req.body.timestamp;
+    const datetime = req.body.datetime || null;
+    const points = req.body.points || null;
+    const type = req.body.type ? req.body.type : 'point';
 
-    if (!api_key) return res.status(400).send('Chave da API não fornecida');
+    if (type !== 'queue' && !timestamp) return res.status(400).send({ error: 'Parâmetro timestamp não fornecido' });
+    if (type == 'queue' && !points) return res.status(400).send({ error: 'Parâmetro points não fornecido' });
+    if (!api_key) return res.status(401).send('Chave da API não fornecida');
     const valid = await token.checkAPIKey(login, api_key);
     if (!valid) return res.status(401).send('Chave da API inválida');
 
-    try {
-        const address = await geolocation.getAddress(latitude, longitude);
-        geolocation.storeCoordinates(login, latitude, longitude, address)
-            .then(() => { res.sendStatus(200) })
-            .catch((err) => { res.status(500).send(err) });
-    } catch (error) {
-        res.status(500).send(error);
+    if (type == 'point') {
+        try {
+            const address = await geolocation.getAddress(latitude, longitude);
+            geolocation.storeCoordinate(login, latitude, longitude, address, timestamp, datetime)
+                .then(() => { res.sendStatus(200) })
+                .catch((err) => { res.status(500).send(err) });
+        } catch (error) {
+            res.status(500).send(error);
+        }
     }
+    else if (type == 'queue') {
+        if (!points) return res.status(400).send({ error: 'Parâmetro points não fornecido' });
+        geolocation.getLastCoordinate(login)
+        .then(async (last_coordinate) => {
+            try {
+                let delta, corrected_datetime;
+                for (let i = 0; i < points.length; i++) {
+                    delta = Number(points[i].timestamp) - Number(last_coordinate.timestamp);
+                    corrected_datetime = moment(last_coordinate.hour).add(delta, 'seconds').format('YYYY-DD-MM HH:mm:ss');
+                    let address = await geolocation.getAddress(points[i].latitude, points[i].longitude);
+                    await geolocation.storeCoordinate(login, points[i].latitude, points[i].longitude, address, points[i].timestamp, corrected_datetime);
+                    last_coordinate = {
+                        ...points[i],
+                        hour: corrected_datetime
+                    }
+                }
+            } catch (error) {
+                res.status(500).send(error);
+            }
+            return res.sendStatus(200);
+        })
+        .catch((error) => { res.status(500).send(error) });
+    }
+    else return res.status(400).send({ error: 'O parâmetro type deve ser point ou queue' });
 });
 
 app.post('/auth', (req, res) => { //Autentica um usuário
