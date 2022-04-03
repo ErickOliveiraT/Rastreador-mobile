@@ -9,7 +9,7 @@ import time
 import sys
 import os
 
-load_dotenv('C:\\Users\\Érick\\Desktop\\Projetos\\Rastreador\\simulator\\.env')
+load_dotenv('C:\\Users\\Érick\\Desktop\\Projetos\\Rastreador\\tester\\.env')
 input_file = sys.argv[1]
 api_url = os.environ['API_URL_PROD']
 token = False

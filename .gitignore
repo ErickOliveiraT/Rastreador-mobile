@@ -9,3 +9,4 @@ server/app.yaml
 server/secrets/*
 device/src/FEIS81KJH6JAVDT/FEIS81KJH6JAVDT.ino
 tester/data/*
+*/.env
