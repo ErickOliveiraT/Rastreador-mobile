@@ -10,7 +10,6 @@ export default class PolylineOverlay extends PureComponent {
       circleColor = "black",
       lineWidth = 8,
       renderWhileDragging = true,
-      setAlertMessage,
       handleAlertOpen
     } = this.props;
     ctx.clearRect(0, 0, width, height);
@@ -38,8 +37,7 @@ export default class PolylineOverlay extends PureComponent {
         if (ctx.isPointInPath(mousePosition.x, mousePosition.y)) {
           ctx.fillStyle = "red";
           const d = new Date(point.hour);
-          setAlertMessage(d.toLocaleString("pt-BR"));
-          handleAlertOpen();
+          handleAlertOpen(d.toLocaleString("pt-BR"));
         } else {
           ctx.fillStyle = "blue";
         }

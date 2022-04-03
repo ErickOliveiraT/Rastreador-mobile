@@ -9,10 +9,8 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import RoomIcon from "@material-ui/icons/Room";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import Avatar from "@material-ui/core/Avatar";
 import Grid from "@material-ui/core/Grid";
-import ButtonBase from "@material-ui/core/ButtonBase";
 
 const useStyles = makeStyles(theme => ({
   list: {
@@ -126,7 +124,6 @@ export default function Menu({
                 (new Date()).getFullYear(),
                 user.login,
                 handleAlertOpen,
-                setAlertMessage,
                 setViewPort
               )
             );

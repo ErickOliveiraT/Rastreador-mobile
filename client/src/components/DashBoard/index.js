@@ -26,21 +26,24 @@ export default function DashBoard(props) {
   });
   let intervalRef = useRef([]);
 
-  const [showAlert, setShowAlertMessage] = React.useState(false);
-  const [alertMessage, setAlertMessage] = React.useState("");
-  const handleAlertOpen = () => {
+  const [showAlert, setShowAlertMessage] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  
+  const handleAlertOpen = (msg) => {
     setShowAlertMessage(true);
+    setAlertMessage(msg);
   };
 
   const handleAlertClose = () => {
     setShowAlertMessage(false);
+    setAlertMessage("");
   };
 
   useEffect(() => {
-    dispatch(getLastCoordinate(user.login, setViewPort));
+    dispatch(getLastCoordinate(user.login, handleAlertOpen, setViewPort));
     // interval to get the last coordinate by each 2 seconds
     let id = setInterval(() => {
-      dispatch(getLastCoordinate(user.login));
+      dispatch(getLastCoordinate(user.login, handleAlertOpen));
     }, 2000);
     intervalRef.current.push(id);
     // this return is the same as componentWillUnmount
@@ -60,9 +63,9 @@ export default function DashBoard(props) {
       clearInterval(intervalRef.current[i]);
   };
   const handleInit = () => {
-    dispatch(getLastCoordinate(user.login, setViewPort));
+    dispatch(getLastCoordinate(user.login, handleAlertOpen, setViewPort));
     let id = setInterval(() => {
-      dispatch(getLastCoordinate(user.login));
+      dispatch(getLastCoordinate(user.login, handleAlertOpen));
     }, 2000);
     intervalRef.current.push(id);
   };
@@ -85,7 +88,6 @@ export default function DashBoard(props) {
           mousePosition={mousePosition}
           points={coordinates.points}
           handleAlertOpen={handleAlertOpen}
-          setAlertMessage={setAlertMessage}
         />
         <Marker
           latitude={coordinates.lastCoordinate[1]}
@@ -104,7 +106,6 @@ export default function DashBoard(props) {
         handleCancel={handleCancel}
         handleInit={handleInit}
         handleAlertOpen={handleAlertOpen}
-        setAlertMessage={setAlertMessage}
         setViewPort={setViewPort}
       />
       <Snackbar

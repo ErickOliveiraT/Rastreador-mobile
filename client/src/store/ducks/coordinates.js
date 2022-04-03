@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../../api/api";
 
 // Action Types
 export const Types = {
@@ -53,16 +53,14 @@ export function getCoordinates(
   year,
   login,
   handleAlertOpen = null,
-  setAlertMessage = null,
   setViewPort = false
 ) {
   if (day < 10) day = "0" + day.toString();
-  axios.defaults.headers.common['token'] = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbiI6ImJhcmdyYWxsIiwiaWF0IjoxNTkyNDQ0NzQzLCJleHAiOjE1OTI1MzExNDN9.xGUE2msPtX0Ta8N1fIKWZvUcqb0xw9KACe-RSMRSGnk'
   return function(dispatch) {
     // in getCoordinatesStarted erase the state
     dispatch(getCoordinatesStarted());
-    axios
-      .get(`http://localhost:4000/coordenadas/${day}/${month}/${year}/${login}`, {
+    api
+      .get(`/coordinates/${day}/${month}/${year}/${login}`, {
         headers: {
           'token': `${localStorage.getItem('token')}`
         }
@@ -71,7 +69,6 @@ export function getCoordinates(
         let newPoints = [];
         const resCoordinates = res.data;
         const lastCoordinate = [];
-        console.log(resCoordinates)
         if (resCoordinates && resCoordinates.length > 0 && resCoordinates[0].id) {
           for (let i = 0; i < resCoordinates.length; i++) {
             newPoints.push({
@@ -85,8 +82,6 @@ export function getCoordinates(
           newPoints.pop(); // FIX LAST OBJECT LIKE {total-distance: 0}
           // last position becomes the last position of the date
           lastCoordinate.push(newPoints[newPoints.length - 1].coordinates);
-          console.log(newPoints.length);
-          console.log('last ', newPoints[newPoints.length - 1].coordinates);
           dispatch(getCoordinatesSuccess(newPoints, lastCoordinate[0]));
           if (setViewPort) {
             setViewPort(prevState => ({
@@ -95,49 +90,47 @@ export function getCoordinates(
               longitude: lastCoordinate[0][0]
             }));
           }
-        } else {
-          handleAlertOpen();
-          setAlertMessage(
-            `Nenhuma atividade registrada ${day}/${month}/${year}.`
-          );
+        } 
+        else {
+          handleAlertOpen(`Nenhuma atividade registrada ${day}/${month}/${year}.`);
         }
-
-        // else {
-        //   dispatch(getCoordinatesFailed());
-        // }
       })
-      .catch(error => {
-        // dispatch(getCoordinatesFailed());
+      .catch(() => {
+        handleAlertOpen("Erro ao Buscar Coordenadas.");
       });
   };
 }
 
 // get the last coordinate of the user and delete the route points
-export function getLastCoordinate(login, setViewPort = false) {
+export function getLastCoordinate(login, handleAlertOpen, setViewPort = false) {
   return function(dispatch) {
-    axios
-      .get(`http://localhost:4000/lastcoordinate/${login}`, {
+    api
+      .get(`/lastcoordinate/${login}`, {
         headers: {
           'token': `${localStorage.getItem('token')}`
         }
       })
       .then(res => {
-        console.log(res.data)
-        const lastCoordinate = [
-          Number.parseFloat(res.data.longitude),
-          Number.parseFloat(res.data.latitude)
-        ];
-        dispatch(getLastCoordinatesSuccess(lastCoordinate));
-        if (setViewPort) {
-          setViewPort(prevState => ({
-            ...prevState,
-            latitude: lastCoordinate[1],
-            longitude: lastCoordinate[0]
-          }));
+        if(res.data) {
+          const lastCoordinate = [
+            Number.parseFloat(res.data.longitude),
+            Number.parseFloat(res.data.latitude)
+          ];
+          dispatch(getLastCoordinatesSuccess(lastCoordinate));
+          if (setViewPort) {
+            setViewPort(prevState => ({
+              ...prevState,
+              latitude: lastCoordinate[1],
+              longitude: lastCoordinate[0]
+            }));
+          }
+        }
+        else {
+          handleAlertOpen("Última Coordenada Não Encontrada.");
         }
       })
-      .catch(error => {
-        // dispatch(getLastCoordinatesFailed());
+      .catch(() => {
+        handleAlertOpen("Erro ao Buscar Última Coordenada.");
       });
   };
 }

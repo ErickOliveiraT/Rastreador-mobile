@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../../api/api";
 
 // Action Types
 export const Types = {
@@ -86,17 +86,14 @@ export function userReducer(state = initialState, action) {
 // Action Creators
 export function login(user, history, setShowAlertMessage) {
   return function(dispatch) {
-    console.log("loginstarted");
     dispatch(loginStarted());
-    axios
-      .post("http://localhost:4000/authenticate", {
+    api
+      .post("/auth", {
         login: user.login,
         password: user.password
       })
       .then(res => {
         dispatch(loginSuccess(user.login, res.data.name));
-        console.log(res.data);
-        console.log("Valid: " + res.data.valid);
         if (res.data.valid === true) {
           console.log("Login valido");
           localStorage.setItem("loginValid", "true");
@@ -105,19 +102,26 @@ export function login(user, history, setShowAlertMessage) {
           localStorage.setItem("name", res.data.name);
           history.push("/dashboard");
         } else {
-          console.log("Login invalido");
           dispatch(loginFailed("Login inválido"));
           setShowAlertMessage(true);
         }
       })
       .catch(error => {
-        console.log("Login invalido");
-        console.log(error);
-        dispatch(
-          loginFailed(
-            "Ocorreu um erro, tente novamente mais tarde. erro: " + error
-          )
-        );
+        // TODO: atualizar react-script para usar optional chaining
+        if(error.response && error.response.data) {
+          dispatch(
+            loginFailed(
+              error.response.data.error
+            )
+          );
+        }
+        else {
+          dispatch(
+            loginFailed(
+              "Ocorreu um erro, tente novamente mais tarde."
+            )
+          );
+        }
         setShowAlertMessage(true);
       });
   };
@@ -144,27 +148,34 @@ const loginFailed = alertMessage => ({
 
 export function register(user, setShowAlertMessage, handleChangeForm) {
   return function(dispatch) {
-    console.log("registro started");
     dispatch(registerStarted());
-    axios
-      .post("http://localhost:4000/addUser", {
+    api
+      .post("/addUser", {
         name: user.name,
         login: user.login,
         password: user.password
       })
       .then(res => {
         dispatch(registerSuccess("Registrado com Sucesso!"));
-        console.log("Registro valido");
         setShowAlertMessage(true);
         handleChangeForm();
       })
       .catch(error => {
-        console.log("Registro invalido");
-        dispatch(
-          registerFailed(
-            "Ocorreu um erro, tente novamente mais tarde. erro: " + error
-          )
-        );
+        // TODO: atualizar react-script para usar optional chaining
+        if(error.response && error.response.data) {
+          dispatch(
+            registerFailed(
+              error.response.data.error
+            )
+          );
+        }
+        else {
+          dispatch(
+            registerFailed(
+              "Ocorreu um erro, tente novamente mais tarde."
+            )
+          );
+        }
         setShowAlertMessage(true);
       });
   };
