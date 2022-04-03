@@ -56,11 +56,12 @@ export function getCoordinates(
   setViewPort = false
 ) {
   if (day < 10) day = "0" + day.toString();
+  if (month < 10) month = "0" + month.toString();
   return function(dispatch) {
     // in getCoordinatesStarted erase the state
     dispatch(getCoordinatesStarted());
     api
-      .get(`/coordinates/${day}/${month}/${year}/${login}`, {
+      .get(`/coordinates/${year}/${month}/${day}/${login}`, {
         headers: {
           'token': `${localStorage.getItem('token')}`
         }
