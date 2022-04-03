@@ -17,6 +17,16 @@ Executa em modo produção, consumindo api no endpoint: https://rastreador-tfg.u
 yarn run prod
 ```
 
+Executa setando variáveis de ambiente no Windows (CMD)
+```sh
+set "REACT_APP_NOT_SECRET_CODE=abcdef" && npm start
+```
+
+Executa setando variáveis de ambiente no Windows (Powershell)
+```sh
+($env:REACT_APP_NOT_SECRET_CODE = "abcdef") -and (npm start)
+```
+
 ## Build
 Gerar build de produção da aplicação cliente
 ```sh

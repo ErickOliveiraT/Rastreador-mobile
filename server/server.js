@@ -2,7 +2,6 @@ const geolocation = require('./controllers/geolocation');
 const users = require('./controllers/users');
 const token = require('./controllers/token');
 const mailing = require('./controllers/mailing');
-const database = require('./controllers/database');
 
 const express = require('express');
 const md5 = require('md5');
@@ -61,25 +60,25 @@ app.post('/addcoordinate', async (req, res) => { //Adiciona uma nova coordenada
     else if (type == 'queue') {
         if (!points) return res.status(400).send({ error: 'Parâmetro points não fornecido' });
         geolocation.getLastCoordinate(login)
-        .then(async (last_coordinate) => {
-            try {
-                let delta, corrected_datetime;
-                for (let i = 0; i < points.length; i++) {
-                    delta = Number(points[i].timestamp) - Number(last_coordinate.timestamp);
-                    corrected_datetime = moment(last_coordinate.hour).add(delta, 'seconds').format('YYYY-DD-MM HH:mm:ss');
-                    let address = await geolocation.getAddress(points[i].latitude, points[i].longitude);
-                    await geolocation.storeCoordinate(login, points[i].latitude, points[i].longitude, address, points[i].timestamp, corrected_datetime);
-                    last_coordinate = {
-                        ...points[i],
-                        hour: corrected_datetime
+            .then(async (last_coordinate) => {
+                try {
+                    let delta, corrected_datetime;
+                    for (let i = 0; i < points.length; i++) {
+                        delta = Number(points[i].timestamp) - Number(last_coordinate.timestamp);
+                        corrected_datetime = moment(last_coordinate.hour).add(delta, 'seconds').format('YYYY-MM-DD HH:mm:ss');
+                        let address = await geolocation.getAddress(points[i].latitude, points[i].longitude);
+                        await geolocation.storeCoordinate(login, points[i].latitude, points[i].longitude, address, points[i].timestamp, corrected_datetime);
+                        last_coordinate = {
+                            ...points[i],
+                            hour: corrected_datetime
+                        }
                     }
+                } catch (error) {
+                    res.status(500).send(error);
                 }
-            } catch (error) {
-                res.status(500).send(error);
-            }
-            return res.sendStatus(200);
-        })
-        .catch((error) => { res.status(500).send(error) });
+                return res.sendStatus(200);
+            })
+            .catch((error) => { res.status(500).send(error) });
     }
     else return res.status(400).send({ error: 'O parâmetro type deve ser point ou queue' });
 });

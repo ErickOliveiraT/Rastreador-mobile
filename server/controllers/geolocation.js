@@ -96,7 +96,7 @@ function storeCoordinate(login, latitude, longitude, address, timestamp, datetim
     return new Promise(async (resolve, reject) => {
         let con = await database.getConnection();
 
-        if (!datetime) datetime = moment().utcOffset(-3).format('YYYY-DD-MM HH:mm:ss');
+        if (!datetime) datetime = moment().utcOffset(-3).format('YYYY-MM-DD HH:mm:ss');
         if (!timestamp) timestamp = null;
 
         if (!address) var sql = `INSERT INTO coordenadas(login,latitude,longitude,hour,timestamp) VALUES('${login}','${latitude}','${longitude}','${datetime}','${timestamp}')`;

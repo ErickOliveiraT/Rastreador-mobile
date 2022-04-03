@@ -11,9 +11,9 @@ import os
 
 load_dotenv('C:\\Users\\Érick\\Desktop\\Projetos\\Rastreador\\simulator\\.env')
 input_file = sys.argv[1]
-api_url = os.environ['API_URL_DEV']
+api_url = os.environ['API_URL_PROD']
 token = False
-start_at = datetime(2022, 4, 2, 16, 54, 0)
+start_at = datetime(2022, 4, 2, 16, 48, 21)
 queue_chance = 0.1
 
 def auth():
@@ -63,7 +63,7 @@ def simulate():
                 to_skip -= 1
                 continue
             print('\n{} of {}:'.format(i+1,len(coords)))
-            if is_queue(): #Queue of points
+            if is_queue() and i != 0: #Queue of points
                 points = []
                 qnt_points = randint(2,4)
                 to_skip = qnt_points-1
@@ -75,14 +75,14 @@ def simulate():
                     point['longitude'] = float(coords[i+j].split(',')[0])
                     points.append(point)
                     points_counter += 1
-                    current_date += timedelta(seconds=randint(5,15))
+                    current_date += timedelta(seconds=randint(4,9))
                 post_queue(points)
             else: #Single points
                 longitude = coords[i].split(',')[0]
                 latitude = coords[i].split(',')[1].split('\n')[0]
                 coord = {'latitude': float(latitude), 'longitude': float(longitude)}
                 post_coordinate(coord, current_date)
-                current_date += timedelta(seconds=randint(5,15))
+                current_date += timedelta(seconds=randint(4,9))
                 points_counter += 1
     print('\nTotal of points: {}'.format(points_counter))
 
