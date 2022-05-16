@@ -19,12 +19,14 @@ yarn run prod
 
 Executa setando variáveis de ambiente no Windows (CMD)
 ```sh
-set "REACT_APP_NOT_SECRET_CODE=abcdef" && npm start
+set "REACT_APP_BASE_URL=http://localhost:4000" && yarn start
+set "REACT_APP_BASE_URL=https://rastreador-tfg.uc.r.appspot.com" && yarn start
 ```
 
 Executa setando variáveis de ambiente no Windows (Powershell)
 ```sh
-($env:REACT_APP_NOT_SECRET_CODE = "abcdef") -and (npm start)
+($env:REACT_APP_BASE_URL = "http://localhost:4000") -and (yarn start)
+($env:REACT_APP_BASE_URL = "https://rastreador-tfg.uc.r.appspot.com") -and (yarn start)
 ```
 
 ## Build

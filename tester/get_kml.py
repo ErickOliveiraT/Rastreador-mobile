@@ -28,4 +28,4 @@ else:
 	getKml(sys.argv[2])
 	os.system(sys.argv[2]+'.kml')
 
-#python getkml.py coords.dat map
+#python get_kml.py coords.dat map

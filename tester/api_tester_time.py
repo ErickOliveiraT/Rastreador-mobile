@@ -13,7 +13,7 @@ load_dotenv('C:\\Users\\Érick\\Desktop\\Projetos\\Rastreador\\tester\\.env')
 input_file = sys.argv[1]
 api_url = os.environ['API_URL_PROD']
 token = False
-start_at = datetime(2022, 4, 2, 16, 48, 21)
+start_at = datetime(2022, 4, 22, 6, 10, 0)
 queue_chance = 0.1
 
 def auth():
